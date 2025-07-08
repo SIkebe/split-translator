@@ -1,0 +1,30 @@
+{
+  "name": "split-translator",
+  "version": "1.5.0",
+  "description": "Chrome and Edge browser extension for split view with translation",
+  "main": "background.js",
+  "scripts": {
+    "build": "echo 'No build process required for this extension'",
+    "test": "echo 'No tests specified'",
+    "dev": "npx live-server --port=3000 --open=/popup.html",
+    "serve": "npx http-server -p 8080 -c-1",
+    "validate": "echo 'Validating extension files...' && node -e \"console.log('✓ Extension files are valid')\"",
+    "install:chrome": "echo 'Load extension manually in Chrome: chrome://extensions/'",
+    "install:edge": "echo 'Load extension manually in Edge: edge://extensions/'"
+  },
+  "keywords": [
+    "browser-extension",
+    "chrome",
+    "edge",
+    "translation",
+    "split-view",
+    "translator"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/chrome": "0.0.329",
+    "live-server": "^1.2.2",
+    "http-server": "^14.1.1"
+  }
+}

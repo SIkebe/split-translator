@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "Split Translator",
+  "version": "1.5",
+  "description": "One-click screen splitting with automatic translation on the right side",
+  "permissions": [
+    "tabs",
+    "storage",
+    "system.display"
+  ],
+  "host_permissions": [
+    "https://translate.google.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_title": "Split Translator",
+    "default_icon": {
+      "16": "icons/icon.png",
+      "48": "icons/icon.png",
+      "128": "icons/icon.png"
+    }
+  },
+  "background": {
+    "service_worker": "background.js"
+  },
+  "icons": {
+    "16": "icons/icon.png",
+    "48": "icons/icon.png",
+    "128": "icons/icon.png"
+  }
+}

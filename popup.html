@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <style>
+    body {
+      width: 300px;
+      padding: 16px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 20px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .header img {
+      width: 24px;
+      height: 24px;
+    }
+
+    .header h1 {
+      font-size: 18px;
+      margin: 0;
+      color: #333;
+    }
+
+    .controls {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .language-select {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .language-select label {
+      font-weight: 500;
+      color: #555;
+    }
+
+    select {
+      padding: 8px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-size: 14px;
+    }
+
+    .button-group {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    button {
+      padding: 10px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: background-color 0.2s;
+    }
+
+    .split-button {
+      background-color: #007acc;
+      color: white;
+    }
+
+    .split-button:hover {
+      background-color: #005a9e;
+    }
+
+    .translate-button {
+      background-color: #28a745;
+      color: white;
+    }
+
+    .translate-button:hover {
+      background-color: #218838;
+    }
+
+    .translate-button:disabled {
+      background-color: #6c757d;
+      cursor: not-allowed;
+    }
+
+    .status {
+      margin-top: 12px;
+      padding: 8px;
+      background-color: #f8f9fa;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #666;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <div class="header">
+    <img src="icons/icon.png" alt="Split Translator">
+    <h1>Split Translator</h1>
+  </div>
+
+  <div class="controls">
+    <div class="language-select">
+      <label for="targetLanguage">🎯 Target Language:</label>
+      <select id="targetLanguage">
+        <option value="zh">Chinese</option>
+        <option value="en">English</option>
+        <option value="fr">French</option>
+        <option value="de">German</option>
+        <option value="it">Italian</option>
+        <option value="ja" selected>Japanese</option>
+        <option value="ko">Korean</option>
+        <option value="pt">Portuguese</option>
+        <option value="ru">Russian</option>
+        <option value="es">Spanish</option>
+      </select>
+    </div>
+
+    <div class="button-group">
+      <button id="splitAndTranslate" class="translate-button">
+        ⚡ Split + Translate
+      </button>
+    </div>
+
+    <div id="status" class="status">
+      💡 Select a language and click "Split + Translate"
+    </div>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>
