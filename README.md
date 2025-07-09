@@ -72,7 +72,6 @@ split-translator/
 ├── README.md             # Project documentation
 ├── split-translator-demo.gif  # Demo animation
 └── icons/                # Icon files (multiple sizes)
-    ├── icon.png          # Original icon
     ├── icon-16.png       # 16×16px (toolbar)
     ├── icon-32.png       # 32×32px (Windows)
     ├── icon-48.png       # 48×48px (extension management)
