@@ -1,4 +1,4 @@
-# <img src="icons/icon.png" alt="Split Translator" width="28" height="28" style="vertical-align: middle; margin-right: 8px;"> Split Translator
+# <img src="icons/icon-128.png" alt="Split Translator" width="28" height="28" style="vertical-align: middle; margin-right: 8px;"> Split Translator
 
 **A browser extension for Chrome and Edge that enables seamless side-by-side translation**
 
@@ -62,13 +62,20 @@ All features are executed with a single button:
 
 ```
 split-translator/
-├── manifest.json       # Extension configuration (Manifest V3)
-├── popup.html          # UI (single-button design)
-├── popup.js            # UI logic
-├── background.js       # Main logic (Service Worker)
-├── icons/              # Icon files
-│   └── icon.png        # 16/48/128px supported
-└── package.json        # Project metadata
+├── manifest.json         # Extension configuration (Manifest V3)
+├── popup.html            # UI (single-button design)
+├── popup.js              # UI logic
+├── background.js         # Main logic (Service Worker)
+├── package.json          # Project metadata
+├── LICENSE               # MIT License
+├── PRIVACY_POLICY.md     # Privacy policy for Chrome Web Store
+├── README.md             # Project documentation
+├── split-translator-demo.gif  # Demo animation
+└── icons/                # Icon files (multiple sizes)
+    ├── icon-16.png       # 16×16px (toolbar)
+    ├── icon-32.png       # 32×32px (Windows)
+    ├── icon-48.png       # 48×48px (extension management)
+    └── icon-128.png      # 128×128px (Chrome Web Store)
 ```
 
 ## 🔧 Technical Details
