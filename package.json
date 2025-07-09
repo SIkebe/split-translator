@@ -1,16 +1,18 @@
 {
   "name": "split-translator",
-  "version": "1.5.0",
+  "version": "0.1.0",
   "description": "Chrome and Edge browser extension for split view with translation",
   "main": "background.js",
+  "homepage": "https://github.com/SIkebe/split-translator#readme",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/SIkebe/split-translator.git"
+  },
+  "bugs": {
+    "url": "https://github.com/SIkebe/split-translator/issues"
+  },
   "scripts": {
-    "build": "echo 'No build process required for this extension'",
-    "test": "echo 'No tests specified'",
-    "dev": "npx live-server --port=3000 --open=/popup.html",
-    "serve": "npx http-server -p 8080 -c-1",
-    "validate": "echo 'Validating extension files...' && node -e \"console.log('✓ Extension files are valid')\"",
-    "install:chrome": "echo 'Load extension manually in Chrome: chrome://extensions/'",
-    "install:edge": "echo 'Load extension manually in Edge: edge://extensions/'"
+    "package": "build-package.bat"
   },
   "keywords": [
     "browser-extension",
@@ -18,13 +20,27 @@
     "edge",
     "translation",
     "split-view",
-    "translator"
+    "translator",
+    "google-translate",
+    "productivity",
+    "multi-monitor"
   ],
-  "author": "Your Name",
+  "author": {
+    "name": "SIkebe",
+    "url": "https://github.com/SIkebe"
+  },
   "license": "MIT",
   "devDependencies": {
-    "@types/chrome": "0.0.329",
-    "live-server": "^1.2.2",
-    "http-server": "^14.1.1"
-  }
+    "@types/chrome": "0.0.329"
+  },
+  "files": [
+    "manifest.json",
+    "popup.html",
+    "popup.js",
+    "background.js",
+    "icons/",
+    "LICENSE",
+    "PRIVACY_POLICY.md",
+    "README.md"
+  ]
 }

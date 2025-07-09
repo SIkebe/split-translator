@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Split Translator",
-  "version": "1.5",
+  "version": "0.1.0",
   "description": "One-click screen splitting with automatic translation on the right side",
   "permissions": [
     "tabs",
