@@ -4,6 +4,44 @@ document.addEventListener('DOMContentLoaded', function() {
   const targetLanguageSelect = document.getElementById('targetLanguage');
   const statusDiv = document.getElementById('status');
 
+  // Helper function to update status with proper accessibility
+  function updateStatus(message, type = 'info') {
+    statusDiv.textContent = message;
+    statusDiv.classList.remove('info', 'error', 'success');
+    statusDiv.classList.add(type);
+
+    // Force screen reader announcement for important messages
+    if (type === 'error' || type === 'success') {
+      statusDiv.setAttribute('aria-live', 'assertive');
+      setTimeout(() => {
+        statusDiv.setAttribute('aria-live', 'polite');
+      }, 100);
+    }
+  }
+
+  // Helper function for accessible error messages
+  function getAccessibleErrorMessage(errorMessage) {
+    if (errorMessage.includes('minimum')) {
+      return 'Window size is too small. Please maximize the browser and try again.';
+    } else if (errorMessage.includes('not defined')) {
+      return 'Failed to get screen information. Please reload the page and try again.';
+    } else if (errorMessage.includes('cannot be translated')) {
+      return 'This page type cannot be translated. Please try on a regular website.';
+    } else if (errorMessage.includes('Invalid tab information')) {
+      return 'The tab information is invalid. Please check your browser settings or try again.';
+    } else {
+      return errorMessage;
+    }
+  }
+
+  // Initialize focus management
+  function initializeFocusManagement() {
+    // Set initial focus to the language select for better UX
+    setTimeout(() => {
+      targetLanguageSelect.focus();
+    }, 100);
+  }
+
   // Initialize focus management
   initializeFocusManagement();
 
@@ -114,42 +152,4 @@ document.addEventListener('DOMContentLoaded', function() {
       splitAndTranslateButton.removeAttribute('aria-disabled');
     }
   });
-
-  // Helper function to update status with proper accessibility
-  function updateStatus(message, type = 'info') {
-    statusDiv.textContent = message;
-    statusDiv.classList.remove('info', 'error', 'success');
-    statusDiv.classList.add(type);
-
-    // Force screen reader announcement for important messages
-    if (type === 'error' || type === 'success') {
-      statusDiv.setAttribute('aria-live', 'assertive');
-      setTimeout(() => {
-        statusDiv.setAttribute('aria-live', 'polite');
-      }, 100);
-    }
-  }
-
-  // Helper function for accessible error messages
-  function getAccessibleErrorMessage(errorMessage) {
-    if (errorMessage.includes('minimum')) {
-      return 'Window size is too small. Please maximize the browser and try again.';
-    } else if (errorMessage.includes('not defined')) {
-      return 'Failed to get screen information. Please reload the page and try again.';
-    } else if (errorMessage.includes('cannot be translated')) {
-      return 'This page type cannot be translated. Please try on a regular website.';
-    } else if (errorMessage.includes('Invalid tab information')) {
-      return 'The tab information is invalid. Please check your browser settings or try again.';
-    } else {
-      return errorMessage;
-    }
-  }
-
-  // Initialize focus management
-  function initializeFocusManagement() {
-    // Set initial focus to the language select for better UX
-    setTimeout(() => {
-      targetLanguageSelect.focus();
-    }, 100);
-  }
 });
