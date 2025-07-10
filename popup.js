@@ -42,6 +42,7 @@ document.addEventListener('DOMContentLoaded', function() {
   splitAndTranslateButton.addEventListener('click', async function() {
     try {
       splitAndTranslateButton.disabled = true;
+      splitAndTranslateButton.setAttribute('aria-disabled', 'true');
       splitAndTranslateButton.setAttribute('aria-busy', 'true');
       updateStatus('Getting current tab information...', 'info');
 
@@ -92,7 +93,6 @@ document.addEventListener('DOMContentLoaded', function() {
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {
     statusDiv.textContent = message;
-    statusDiv.classList.add('status');
     statusDiv.classList.remove('info', 'error', 'success');
     statusDiv.classList.add(type);
 
