@@ -2,6 +2,8 @@
 
 // Constants
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps
+const MIN_WINDOW_WIDTH = 400; // Minimum window width in pixels
+const MIN_WINDOW_HEIGHT = 300; // Minimum window height in pixels
 
 // Common error handler
 function handleError(error, context) {
