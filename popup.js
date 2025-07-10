@@ -24,17 +24,41 @@ document.addEventListener('DOMContentLoaded', function() {
     updateStatus(`Language selected: ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
   });
 
-  // Add keyboard navigation support
+  // Get focusable elements for focus management
+  const focusableElements = document.querySelectorAll(
+    'button, select, input, [tabindex]:not([tabindex="-1"])'
+  );
+  const firstFocusable = focusableElements[0];
+  const lastFocusable = focusableElements[focusableElements.length - 1];
+
+  // Unified keyboard navigation support
   document.addEventListener('keydown', function(event) {
     // Handle Enter key on button
     if (event.key === 'Enter' && event.target === splitAndTranslateButton) {
       event.preventDefault();
       splitAndTranslateButton.click();
+      return;
     }
 
     // Handle Escape key to close popup
     if (event.key === 'Escape') {
       window.close();
+      return;
+    }
+
+    // Handle Tab key for focus management
+    if (event.key === 'Tab') {
+      if (event.shiftKey) {
+        if (document.activeElement === firstFocusable) {
+          event.preventDefault();
+          lastFocusable.focus();
+        }
+      } else {
+        if (document.activeElement === lastFocusable) {
+          event.preventDefault();
+          firstFocusable.focus();
+        }
+      }
     }
   });
 
@@ -126,29 +150,5 @@ document.addEventListener('DOMContentLoaded', function() {
     setTimeout(() => {
       targetLanguageSelect.focus();
     }, 100);
-
-    // Manage focus trap within popup
-    const focusableElements = document.querySelectorAll(
-      'button, select, input, [tabindex]:not([tabindex="-1"])'
-    );
-
-    const firstFocusable = focusableElements[0];
-    const lastFocusable = focusableElements[focusableElements.length - 1];
-
-    document.addEventListener('keydown', function(event) {
-      if (event.key === 'Tab') {
-        if (event.shiftKey) {
-          if (document.activeElement === firstFocusable) {
-            event.preventDefault();
-            lastFocusable.focus();
-          }
-        } else {
-          if (document.activeElement === lastFocusable) {
-            event.preventDefault();
-            firstFocusable.focus();
-          }
-        }
-      }
-    });
   }
 });
