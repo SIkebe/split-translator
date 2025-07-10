@@ -27,6 +27,19 @@ async function handleSplitView(currentTab, targetLanguage) {
   try {
     console.log('Starting split view:', currentTab);
 
+    // Validate current tab
+    if (!currentTab || !currentTab.url) {
+      throw new Error('Invalid tab information');
+    }
+
+    // Check if URL can be translated
+    if (currentTab.url.startsWith('chrome://') ||
+        currentTab.url.startsWith('edge://') ||
+        currentTab.url.startsWith('about:') ||
+        currentTab.url.startsWith('chrome-extension://')) {
+      throw new Error('This page cannot be translated');
+    }
+
     // Get current window information
     const currentWindow = await chrome.windows.get(currentTab.windowId);
 
@@ -185,12 +198,13 @@ async function waitForTabReady(tabId, maxWaitTime = 3000) {
 
 // Get display bounds (helper function)
 function getDisplayBounds(displays, currentWindow) {
-  if (!displays.length) {
+  if (!displays || !displays.length) {
+    console.warn('No display information available, using current window bounds');
     return {
-      left: currentWindow.left,
-      top: currentWindow.top,
-      width: currentWindow.width,
-      height: currentWindow.height
+      left: 0,
+      top: 0,
+      width: Math.max(currentWindow.width, 1200), // Minimum width fallback
+      height: Math.max(currentWindow.height, 800)  // Minimum height fallback
     };
   }
 
