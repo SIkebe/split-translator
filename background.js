@@ -203,8 +203,8 @@ function getDisplayBounds(displays, currentWindow) {
     return {
       left: currentWindow.left, // Preserve current window position
       top: currentWindow.top,  // Preserve current window position
-      width: currentWindow.width < 1200 ? 1200 : currentWindow.width, // Enforce minimum width only if needed
-      height: currentWindow.height < 800 ? 800 : currentWindow.height  // Enforce minimum height only if needed
+      width: currentWindow.width < MIN_WINDOW_WIDTH ? MIN_WINDOW_WIDTH : currentWindow.width, // Enforce minimum width only if needed
+      height: currentWindow.height < MIN_WINDOW_HEIGHT ? MIN_WINDOW_HEIGHT : currentWindow.height  // Enforce minimum height only if needed
     };
   }
 

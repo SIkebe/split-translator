@@ -111,6 +111,7 @@ document.addEventListener('DOMContentLoaded', function() {
     } finally {
       splitAndTranslateButton.disabled = false;
       splitAndTranslateButton.removeAttribute('aria-busy');
+      splitAndTranslateButton.removeAttribute('aria-disabled');
     }
   });
 
