@@ -28,8 +28,6 @@ echo [INFO] Package size:
 powershell -Command "& { $size = (Get-Item 'dist\split-translator.zip').Length; Write-Host \"   Size: $([math]::Round($size/1KB, 2)) KB\"; if ($size -gt 10485760) { Write-Host '[ERROR] Package size exceeds 10MB limit!' -ForegroundColor Red; exit 1 } }"
 
 REM Check if size is under 10MB (Chrome Web Store limit)
-REM Size check is now integrated into the previous command.
-
 echo.
 echo Ready to upload to Chrome Web Store!
 echo.
