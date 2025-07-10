@@ -92,7 +92,9 @@ document.addEventListener('DOMContentLoaded', function() {
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {
     statusDiv.textContent = message;
-    statusDiv.className = `status ${type}`;
+    statusDiv.classList.add('status');
+    statusDiv.classList.remove('info', 'error', 'success');
+    statusDiv.classList.add(type);
 
     // Force screen reader announcement for important messages
     if (type === 'error' || type === 'success') {
@@ -111,6 +113,8 @@ document.addEventListener('DOMContentLoaded', function() {
       return 'Failed to get screen information. Please reload the page and try again.';
     } else if (errorMessage.includes('cannot be translated')) {
       return 'This page type cannot be translated. Please try on a regular website.';
+    } else if (errorMessage.includes('Invalid tab information')) {
+      return 'The tab information is invalid. Please check your browser settings or try again.';
     } else {
       return errorMessage;
     }

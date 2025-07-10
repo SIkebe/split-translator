@@ -201,10 +201,10 @@ function getDisplayBounds(displays, currentWindow) {
   if (!displays || !displays.length) {
     console.warn('No display information available, using current window bounds');
     return {
-      left: 0,
-      top: 0,
-      width: Math.max(currentWindow.width, 1200), // Minimum width fallback
-      height: Math.max(currentWindow.height, 800)  // Minimum height fallback
+      left: currentWindow.left, // Preserve current window position
+      top: currentWindow.top,  // Preserve current window position
+      width: currentWindow.width < 1200 ? 1200 : currentWindow.width, // Enforce minimum width only if needed
+      height: currentWindow.height < 800 ? 800 : currentWindow.height  // Enforce minimum height only if needed
     };
   }
 
