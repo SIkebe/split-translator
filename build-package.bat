@@ -23,6 +23,13 @@ REM Display package contents
 echo [INFO] Package contents:
 powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::OpenRead('dist\split-translator.zip'); $zip.Entries | ForEach-Object { Write-Host \"   $($_.FullName)\" }; $zip.Dispose() }"
 
+REM Display package size
+echo [INFO] Package size:
+powershell -Command "& { $size = (Get-Item 'dist\split-translator.zip').Length; Write-Host \"   Size: $([math]::Round($size/1KB, 2)) KB\" }"
+
+REM Check if size is under 10MB (Chrome Web Store limit)
+powershell -Command "& { $size = (Get-Item 'dist\split-translator.zip').Length; if ($size -gt 10485760) { Write-Host '[WARNING] Package size exceeds 10MB limit!' -ForegroundColor Red } }"
+
 echo.
 echo Ready to upload to Chrome Web Store!
 echo.
