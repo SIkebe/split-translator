@@ -71,15 +71,16 @@ document.addEventListener('DOMContentLoaded', function() {
     updateStatus(`Language selected: ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
   });
 
-  // Get focusable elements for focus management
-  const focusableElements = document.querySelectorAll(
-    'button, select, input, [tabindex]:not([tabindex="-1"])'
-  );
-  let firstFocusable = null;
-  let lastFocusable = null;
-  if (focusableElements.length > 0) {
-    firstFocusable = focusableElements[0];
-    lastFocusable = focusableElements[focusableElements.length - 1];
+  // Helper function to get current focusable elements
+  function getFocusableElements() {
+    const elements = document.querySelectorAll(
+      'button, select, input, [tabindex]:not([tabindex="-1"])'
+    );
+    return {
+      elements: elements,
+      first: elements.length > 0 ? elements[0] : null,
+      last: elements.length > 0 ? elements[elements.length - 1] : null
+    };
   }
 
   // Unified keyboard navigation support
@@ -99,15 +100,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle Tab key for focus management
     if (event.key === 'Tab') {
-      if (event.shiftKey) {
-        if (document.activeElement === firstFocusable) {
-          event.preventDefault();
-          lastFocusable.focus();
-        }
-      } else {
-        if (document.activeElement === lastFocusable) {
-          event.preventDefault();
-          firstFocusable.focus();
+      // Recalculate focusable elements to handle dynamic changes
+      const focusable = getFocusableElements();
+
+      if (focusable.first && focusable.last) {
+        if (event.shiftKey) {
+          if (document.activeElement === focusable.first) {
+            event.preventDefault();
+            focusable.last.focus();
+          }
+        } else {
+          if (document.activeElement === focusable.last) {
+            event.preventDefault();
+            focusable.first.focus();
+          }
         }
       }
     }
