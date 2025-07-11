@@ -4,6 +4,30 @@ document.addEventListener('DOMContentLoaded', function() {
   const targetLanguageSelect = document.getElementById('targetLanguage');
   const statusDiv = document.getElementById('status');
 
+  // Initialize status text span (once only)
+  const statusTextSpan = document.createElement('span');
+  statusTextSpan.className = 'status-text';
+  statusDiv.appendChild(statusTextSpan);
+
+  // Helper function to update status with proper accessibility
+  function updateStatus(message, type = 'info') {
+    statusTextSpan.textContent = message;
+    statusDiv.classList.remove('info', 'error', 'success');
+    statusDiv.classList.add(type);
+
+    // Force screen reader announcement for important messages only
+    if (type === 'error' || type === 'success') {
+      statusDiv.setAttribute('aria-live', 'assertive');
+      setTimeout(() => statusDiv.setAttribute('aria-live', 'polite'), 100);
+    }
+  }
+
+  // Set initial status message
+  updateStatus('Select a language and click "Split + Translate"', 'info');
+
+  // Initialize focus management
+  setTimeout(() => targetLanguageSelect.focus(), 100);
+
   // Load saved language settings
   chrome.storage.sync.get(['targetLanguage'], function(result) {
     if (result.targetLanguage) {
@@ -16,13 +40,53 @@ document.addEventListener('DOMContentLoaded', function() {
     chrome.storage.sync.set({
       targetLanguage: targetLanguageSelect.value
     });
+
+    // Announce language change to screen readers (simpler message)
+    updateStatus(`Language changed to ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
+  });
+
+  // Helper function to get current focusable elements
+  function getFocusableElements() {
+    const elements = document.querySelectorAll(
+      'button, select, input, [tabindex]:not([tabindex="-1"])'
+    );
+    return {
+      elements: elements,
+      first: elements.length > 0 ? elements[0] : null,
+      last: elements.length > 0 ? elements[elements.length - 1] : null
+    };
+  }
+
+  // Unified keyboard navigation support
+  document.addEventListener('keydown', function(event) {
+    // Handle Escape key to close popup
+    if (event.key === 'Escape') {
+      window.close();
+      return;
+    }
+
+    // Handle Tab key for focus management
+    if (event.key === 'Tab') {
+      const focusable = getFocusableElements();
+
+      if (focusable.first && focusable.last) {
+        if (event.shiftKey && document.activeElement === focusable.first) {
+          event.preventDefault();
+          focusable.last.focus();
+        } else if (!event.shiftKey && document.activeElement === focusable.last) {
+          event.preventDefault();
+          focusable.first.focus();
+        }
+      }
+    }
   });
 
   // Split + Translate button click event
   splitAndTranslateButton.addEventListener('click', async function() {
     try {
       splitAndTranslateButton.disabled = true;
-      statusDiv.textContent = 'Getting current tab information...';
+      splitAndTranslateButton.setAttribute('aria-busy', 'true');
+      updateStatus('Getting current tab information...', 'info');
 
       // Get current tab information
       const [currentTab] = await chrome.tabs.query({ active: true, currentWindow: true });
@@ -31,7 +95,7 @@ document.addEventListener('DOMContentLoaded', function() {
         throw new Error('Could not get current tab');
       }
 
-      statusDiv.textContent = 'Executing split view + translation...';
+      updateStatus('Executing split view + translation...', 'info');
 
       // Send split + translate instruction to background script
       const response = await chrome.runtime.sendMessage({
@@ -41,9 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
       });
 
       if (response.success) {
-        statusDiv.textContent = 'Split + translation completed!';
-        statusDiv.style.backgroundColor = '#d4edda';
-        statusDiv.style.color = '#155724';
+        updateStatus('Split + translation completed successfully!', 'success');
 
         // Close popup after 1 second
         setTimeout(() => {
@@ -54,27 +116,10 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } catch (error) {
       console.error('Split + translation error:', error);
-
-      // Display detailed error messages in English
-      let errorMessage = error.message;
-      if (error.message.includes('minimum')) {
-        errorMessage = 'Window size is too small. Please maximize the browser and try again.';
-      } else if (error.message.includes('not defined')) {
-        errorMessage = 'Failed to get screen information. Please reload the page and try again.';
-      }
-
-      statusDiv.textContent = `Error: ${errorMessage}`;
-      statusDiv.style.backgroundColor = '#f8d7da';
-      statusDiv.style.color = '#721c24';
-
-      // Restore original color after 5 seconds
-      setTimeout(() => {
-        statusDiv.style.backgroundColor = '#f8f9fa';
-        statusDiv.style.color = '#666';
-        statusDiv.textContent = 'Select a language and click "Split + Translate"';
-      }, 5000);
+      updateStatus(`Error: ${error.message}`, 'error');
     } finally {
       splitAndTranslateButton.disabled = false;
+      splitAndTranslateButton.removeAttribute('aria-busy');
     }
   });
 });

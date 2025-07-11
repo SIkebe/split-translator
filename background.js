@@ -2,6 +2,8 @@
 
 // Constants
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps
+const MIN_WINDOW_WIDTH = 400; // Minimum window width in pixels
+const MIN_WINDOW_HEIGHT = 300; // Minimum window height in pixels
 
 // Common error handler
 function handleError(error, context) {
@@ -26,6 +28,26 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 async function handleSplitView(currentTab, targetLanguage) {
   try {
     console.log('Starting split view:', currentTab);
+
+    // Validate current tab
+    if (!currentTab || !currentTab.url || typeof currentTab.windowId !== 'number') {
+      throw new Error('The tab information is invalid. Please check your browser settings or try again.');
+    }
+
+    // Check if URL can be translated
+    const UNSUPPORTED_PREFIXES = [
+      'chrome://',
+      'edge://',
+      'about:',
+      'chrome-extension://',
+      'edge-extension://',
+      'file://',
+    ];
+
+    if (UNSUPPORTED_PREFIXES.some(prefix => currentTab.url.startsWith(prefix)) ||
+        currentTab.url.includes('translate.goog')) {
+      throw new Error('This page type cannot be translated. Please try on a regular website.');
+    }
 
     // Get current window information
     const currentWindow = await chrome.windows.get(currentTab.windowId);
@@ -183,39 +205,52 @@ async function waitForTabReady(tabId, maxWaitTime = 3000) {
   }
 }
 
+// Helper function to enforce minimum dimensions
+function enforceMinimumDimensions(bounds) {
+  return {
+    ...bounds,
+    width: Math.max(bounds.width, MIN_WINDOW_WIDTH),
+    height: Math.max(bounds.height, MIN_WINDOW_HEIGHT)
+  };
+}
+
 // Get display bounds (helper function)
 function getDisplayBounds(displays, currentWindow) {
-  if (!displays.length) {
-    return {
-      left: currentWindow.left,
-      top: currentWindow.top,
+  let bounds;
+
+  if (!displays || !displays.length) {
+    console.warn('No display information available, using current window bounds');
+    bounds = {
+      left: currentWindow.left, // Preserve current window position
+      top: currentWindow.top,  // Preserve current window position
       width: currentWindow.width,
       height: currentWindow.height
     };
+  } else {
+    // Find the display to which the current window belongs
+    // Use window center point for accurate detection
+    const windowCenterX = currentWindow.left + (currentWindow.width / 2);
+    const windowCenterY = currentWindow.top + (currentWindow.height / 2);
+
+    const display = displays.find(d =>
+      windowCenterX >= d.workArea.left &&
+      windowCenterX < d.workArea.left + d.workArea.width &&
+      windowCenterY >= d.workArea.top &&
+      windowCenterY < d.workArea.top + d.workArea.height
+    ) || displays[0];
+
+    console.log('Detected display:', display);
+
+    // Use entire display bounds instead of work area
+    bounds = {
+      left: display.workArea.left,
+      top: display.workArea.top,
+      width: display.workArea.width,
+      height: display.workArea.height
+    };
   }
 
-  // Find the display to which the current window belongs
-  // Use window center point for accurate detection
-  const windowCenterX = currentWindow.left + (currentWindow.width / 2);
-  const windowCenterY = currentWindow.top + (currentWindow.height / 2);
-
-  const display = displays.find(d =>
-    windowCenterX >= d.workArea.left &&
-    windowCenterX < d.workArea.left + d.workArea.width &&
-    windowCenterY >= d.workArea.top &&
-    windowCenterY < d.workArea.top + d.workArea.height
-  ) || displays[0];
-
-  console.log('Detected display:', display);
-  console.log('Current window position:', { left: currentWindow.left, top: currentWindow.top, width: currentWindow.width, height: currentWindow.height });
-
-  // Use entire display bounds instead of work area
-  return {
-    left: display.workArea.left,
-    top: display.workArea.top,
-    width: display.workArea.width,
-    height: display.workArea.height
-  };
+  return enforceMinimumDimensions(bounds);
 }
 
 // Extension installation handler

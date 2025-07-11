@@ -1,7 +1,10 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Split Translator</title>
+  <meta name="description" content="Browser extension for split-screen translation with Google Translate">
   <style>
     body {
       width: 300px;
@@ -90,6 +93,7 @@
     .translate-button:disabled {
       background-color: #6c757d;
       cursor: not-allowed;
+      opacity: 0.65;
     }
 
     .status {
@@ -98,44 +102,131 @@
       background-color: #f8f9fa;
       border-radius: 4px;
       font-size: 12px;
-      color: #666;
+      color: #333;
       text-align: center;
+      min-height: 20px;
+    }
+
+    .status.success {
+      background-color: #d4edda;
+      color: #155724;
+      border: 1px solid #c3e6cb;
+    }
+
+    .status.error {
+      background-color: #f8d7da;
+      color: #721c24;
+      border: 1px solid #f5c6cb;
+    }
+
+    button:focus {
+      outline: 2px solid #0056b3;
+      outline-offset: 2px;
+    }
+
+    select:focus {
+      outline: 2px solid #0056b3;
+      outline-offset: 2px;
+      border-color: #0056b3;
+    }
+
+    /* High contrast mode support */
+    @media (prefers-contrast: high) {
+      button {
+        border: 2px solid;
+      }
+
+      .translate-button {
+        border-color: #ffffff;
+      }
+
+      select {
+        border-width: 2px;
+      }
+    }
+
+    /* Reduced motion support */
+    @media (prefers-reduced-motion: reduce) {
+      button {
+        transition: none;
+      }
+    }
+
+    /* Screen reader only content */
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    /* Make skip link visible when focused */
+    .sr-only:focus {
+      position: static;
+      width: auto;
+      height: auto;
+      padding: 8px 12px;
+      margin: 0;
+      overflow: visible;
+      clip: auto;
+      white-space: normal;
+      background-color: #007acc;
+      color: white;
+      border-radius: 4px;
+      outline: 2px solid #0056b3;
+      outline-offset: 2px;
+      z-index: 1000;
     }
   </style>
 </head>
 <body>
-  <div class="header">
-    <img src="icons/icon-48.png" alt="Split Translator">
-    <h1>Split Translator</h1>
-  </div>
+  <a href="#main" class="sr-only">Skip to main content</a>
+  <main role="main" id="main">
+    <header class="header">
+      <img src="icons/icon-48.png" alt="" aria-hidden="true">
+      <h1>Split Translator</h1>
+    </header>
 
-  <div class="controls">
-    <div class="language-select">
-      <label for="targetLanguage">🎯 Target Language:</label>
-      <select id="targetLanguage">
-        <option value="zh">Chinese</option>
-        <option value="en">English</option>
-        <option value="fr">French</option>
-        <option value="de">German</option>
-        <option value="it">Italian</option>
-        <option value="ja" selected>Japanese</option>
-        <option value="ko">Korean</option>
-        <option value="pt">Portuguese</option>
-        <option value="ru">Russian</option>
-        <option value="es">Spanish</option>
-      </select>
-    </div>
+    <div class="controls">
+      <div class="language-select">
+        <label for="targetLanguage"><span aria-hidden="true">🎯</span> Target Language:</label>
+        <select id="targetLanguage" aria-label="Select target language for translation" aria-describedby="language-help">
+            <option value="zh" lang="zh">Chinese (中文)</option>
+            <option value="en" lang="en">English</option>
+            <option value="fr" lang="fr">French (Français)</option>
+            <option value="de" lang="de">German (Deutsch)</option>
+            <option value="it" lang="it">Italian (Italiano)</option>
+            <option value="ja" lang="ja" selected>Japanese (日本語)</option>
+            <option value="ko" lang="ko">Korean (한국어)</option>
+            <option value="pt" lang="pt">Portuguese (Português)</option>
+            <option value="ru" lang="ru">Russian (Русский)</option>
+            <option value="es" lang="es">Spanish (Español)</option>
+        </select>
+        <span id="language-help" class="sr-only">Select the language you want to translate the current page to</span>
+      </div>
 
-    <div class="button-group">
-      <button id="splitAndTranslate" class="translate-button">
-        ⚡ Split + Translate
-      </button>
-    </div>
+      <div class="button-group">
+        <button id="splitAndTranslate"
+                class="translate-button"
+                type="button"
+                aria-label="Split screen and translate current page to selected language">
+          <span aria-hidden="true">⚡</span> Split + Translate
+        </button>
+      </div>
 
-    <div id="status" class="status">
-      💡 Select a language and click "Split + Translate"
+      <div id="status"
+           class="status"
+           role="status"
+           aria-live="polite"
+           aria-atomic="true">
+      </div>
     </div>
-  </div>
+  </main>
 
   <script src="popup.js"></script>
 </body>
