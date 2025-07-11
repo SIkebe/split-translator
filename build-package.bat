@@ -13,7 +13,7 @@ if exist "dist\split-translator.zip" del "dist\split-translator.zip"
 echo [*] Creating package...
 
 REM Create ZIP file using PowerShell
-powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::Open('dist\split-translator.zip', 'Create'); $files = @('manifest.json', 'popup.html', 'popup.js', 'background.js', 'LICENSE', 'PRIVACY_POLICY.md'); foreach ($file in $files) { if (Test-Path $file) { [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file, $file) | Out-Null; Write-Host \"+ $file\" } }; if (Test-Path 'icons') { Get-ChildItem 'icons\*.png' | ForEach-Object { [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, 'icons\' + $_.Name) | Out-Null; Write-Host \"+ icons\$($_.Name)\" } }; $zip.Dispose() }"
+powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem; $zip = [System.IO.Compression.ZipFile]::Open('dist\split-translator.zip', 'Create'); $files = @('manifest.json', 'popup.html', 'dist\popup.js', 'dist\background.js', 'LICENSE', 'PRIVACY_POLICY.md'); foreach ($file in $files) { if (Test-Path $file) { [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $file, $file) | Out-Null; Write-Host \"+ $file\" } }; if (Test-Path 'icons') { Get-ChildItem 'icons\*.png' | ForEach-Object { [System.IO.Compression.ZipFileExtensions]::CreateEntryFromFile($zip, $_.FullName, 'icons\' + $_.Name) | Out-Null; Write-Host \"+ icons\$($_.Name)\" } }; $zip.Dispose() }"
 
 echo.
 echo [OK] Package created successfully: dist\split-translator.zip
