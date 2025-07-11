@@ -135,11 +135,11 @@
       button {
         border: 2px solid;
       }
-      
+
       .translate-button {
         border-color: #ffffff;
       }
-      
+
       select {
         border-width: 2px;
       }
@@ -178,31 +178,31 @@
       <div class="language-select">
         <label for="targetLanguage"><span aria-hidden="true">🎯</span> Target Language:</label>
         <select id="targetLanguage" aria-label="Select target language for translation" aria-describedby="language-help">
-          <option value="zh">Chinese (中文)</option>
-          <option value="en">English</option>
-          <option value="fr">French (Français)</option>
-          <option value="de">German (Deutsch)</option>
-          <option value="it">Italian (Italiano)</option>
-          <option value="ja" selected>Japanese (日本語)</option>
-          <option value="ko">Korean (한국어)</option>
-          <option value="pt">Portuguese (Português)</option>
-          <option value="ru">Russian (Русский)</option>
-          <option value="es">Spanish (Español)</option>
+            <option value="zh" lang="zh">Chinese (中文)</option>
+            <option value="en" lang="en">English</option>
+            <option value="fr" lang="fr">French (Français)</option>
+            <option value="de" lang="de">German (Deutsch)</option>
+            <option value="it" lang="it">Italian (Italiano)</option>
+            <option value="ja" lang="ja" selected>Japanese (日本語)</option>
+            <option value="ko" lang="ko">Korean (한국어)</option>
+            <option value="pt" lang="pt">Portuguese (Português)</option>
+            <option value="ru" lang="ru">Russian (Русский)</option>
+            <option value="es" lang="es">Spanish (Español)</option>
         </select>
         <span id="language-help" class="sr-only">Select the language you want to translate the current page to</span>
       </div>
 
       <div class="button-group">
-        <button id="splitAndTranslate" 
-                class="translate-button" 
+        <button id="splitAndTranslate"
+                class="translate-button"
                 aria-label="Split screen and translate current page to selected language">
           <span aria-hidden="true">⚡</span> Split + Translate
         </button>
       </div>
 
-      <div id="status" 
-           class="status" 
-           role="status" 
+      <div id="status"
+           class="status"
+           role="status"
            aria-live="polite"
            aria-atomic="true">
         <span aria-hidden="true">💡</span> Select a language and click "Split + Translate"
