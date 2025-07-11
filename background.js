@@ -39,6 +39,7 @@ async function handleSplitView(currentTab, targetLanguage) {
         currentTab.url.startsWith('edge://') ||
         currentTab.url.startsWith('about:') ||
         currentTab.url.startsWith('chrome-extension://') ||
+        currentTab.url.startsWith('edge-extension://') ||
         currentTab.url.startsWith('file://')) {
       throw new Error('This page cannot be translated');
     }
