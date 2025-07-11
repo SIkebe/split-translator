@@ -18,6 +18,13 @@
     "isolatedModules": false,
     "verbatimModuleSyntax": false
   },
+  "watchOptions": {
+    "watchFile": "priorityPollingInterval",
+    "watchDirectory": "useFsEvents", 
+    "fallbackPolling": "priorityInterval",
+    "synchronousWatchDirectory": true,
+    "excludeDirectories": ["**/node_modules", "**/dist"]
+  },
   "include": [
     "src/**/*"
   ],
