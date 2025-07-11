@@ -110,21 +110,57 @@ split-translator/
 | **Screen Resolution** | Minimum width of 800px is recommended |
 | **Browser Version** | Chrome 88+, Edge 88+ (Manifest V3 required) |
 
-## 🛠️ Development & Customization
+## 🛠️ Development & Building
 
-### Adjusting Window Overlap
-```javascript
-const OVERLAP_PIXELS = 8; // Adjustable in background.js
+This extension is built with **TypeScript** for enhanced type safety and maintainability.
+
+### Prerequisites
+- Node.js (v20 or higher)
+- npm
+
+### Building from Source
+```bash
+# Install dependencies
+npm install
+
+# Build TypeScript to JavaScript
+npm run build
+
+# Clean build directory
+npm run clean
+
+# Watch for changes during development
+npm run watch
+
+# Build and package for distribution
+npm run package
 ```
 
-### Adding a Language
+### Project Structure
+```
+src/
+  ├── background.ts    # Service worker (TypeScript)
+  ├── popup.ts         # Popup script (TypeScript)
+dist/
+  ├── background.js    # Compiled service worker
+  ├── popup.js         # Compiled popup script
+```
+
+### Development & Customization
+
+#### Adjusting Window Overlap
+```typescript
+const OVERLAP_PIXELS = 8; // Adjustable in src/background.ts
+```
+
+#### Adding a Language
 ```html
 <!-- Add to the <select> element in popup.html -->
 <option value="new_language_code">🏁 New Language Name</option>
 ```
 
-### Timeout Setting
-```javascript
+#### Timeout Setting
+```typescript
 await waitForTabReady(tabId, 3000); // 3 seconds timeout
 ```
 

@@ -15,7 +15,8 @@
     "build": "tsc",
     "watch": "tsc --watch",
     "package": "npm run build && build-package.bat",
-    "clean": "rimraf dist"
+    "clean": "rimraf dist",
+    "dev": "npm run clean && npm run build && echo 'Development build complete. Load dist/ folder in Chrome Extensions.'"
   },
   "keywords": [
     "browser-extension",
