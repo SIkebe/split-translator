@@ -59,7 +59,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Announce language change to screen readers
-    updateStatus(`Language selected: ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info', 'assertive');
+    updateStatus(`Language selected: ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
   });
 
   // Get focusable elements for focus management
