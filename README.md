@@ -115,7 +115,7 @@ split-translator/
 This extension is built with **TypeScript** for enhanced type safety and maintainability.
 
 ### Prerequisites
-- Node.js (v20 or higher)
+- Node.js (v22 or higher)
 - npm
 
 ### Building from Source
