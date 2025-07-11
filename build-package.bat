@@ -28,7 +28,7 @@ REM Display package size
 echo [INFO] Package size:
 powershell -Command @"
 $size = (Get-Item 'dist\split-translator.zip').Length
-Write-Host "   Size: $([math]::Round($size/1KB, 2)) KB"
+Write-Host "   Size: $([math]::Round($size/(1024*1024), 2)) MB"
 if ($size -gt 10485760) {
     Write-Host '[ERROR] Package size exceeds 10MB limit!' -ForegroundColor Red
     exit 1

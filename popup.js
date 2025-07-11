@@ -36,7 +36,7 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 
     for (const key in errorMessageMap) {
-      if (errorMessage.includes(key)) {
+      if (errorMessage.toLowerCase().includes(key.toLowerCase())) {
         return errorMessageMap[key];
       }
     }
