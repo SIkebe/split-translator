@@ -3,16 +3,21 @@ document.addEventListener('DOMContentLoaded', function() {
   const splitAndTranslateButton = document.getElementById('splitAndTranslate');
   const targetLanguageSelect = document.getElementById('targetLanguage');
   const statusDiv = document.getElementById('status');
+  if (!statusDiv.querySelector('.status-text')) {
+    const statusTextSpan = document.createElement('span');
+    statusTextSpan.className = 'status-text';
+    statusDiv.appendChild(statusTextSpan);
+  }
 
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {
-    let textNode = Array.from(statusDiv.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
-    if (textNode) {
-      textNode.nodeValue = message;
-    } else {
-      textNode = document.createTextNode(message);
-      statusDiv.appendChild(textNode);
+    let statusTextSpan = statusDiv.querySelector('.status-text');
+    if (!statusTextSpan) {
+      statusTextSpan = document.createElement('span');
+      statusTextSpan.className = 'status-text';
+      statusDiv.appendChild(statusTextSpan);
     }
+    statusTextSpan.textContent = message;
     statusDiv.classList.remove('info', 'error', 'success');
     statusDiv.classList.add(type);
 

@@ -31,7 +31,7 @@ async function handleSplitView(currentTab, targetLanguage) {
 
     // Validate current tab
     if (!currentTab || !currentTab.url || typeof currentTab.windowId !== 'number') {
-      throw new Error('Invalid tab information: Missing URL or windowId');
+      throw new Error(ERR_INVALID_TAB_INFO);
     }
 
     // Check if URL can be translated
@@ -41,7 +41,7 @@ async function handleSplitView(currentTab, targetLanguage) {
         currentTab.url.startsWith('chrome-extension://') ||
         currentTab.url.startsWith('edge-extension://') ||
         currentTab.url.startsWith('file://')) {
-      throw new Error('This page type cannot be translated');
+      throw new Error('ERR_PAGE_TYPE_UNSUPPORTED');
     }
 
     // Get current window information
