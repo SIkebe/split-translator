@@ -1,4 +1,4 @@
-name: Setup Development Environment
+name: Copilot Setup Steps
 
 on:
   workflow_dispatch:
@@ -8,14 +8,15 @@ on:
     branches: [main]
 
 jobs:
-  setup-environment:
-    name: Setup Development Environment for Split Translator
+  setup:
+    name: Setup Development Environment
     runs-on: ubuntu-latest
     
     outputs:
       node-version: ${{ steps.environment.outputs.node-version }}
       typescript-version: ${{ steps.environment.outputs.typescript-version }}
       build-status: ${{ steps.build.outputs.status }}
+      setup-status: ${{ steps.setup-complete.outputs.status }}
       
     steps:
       - name: Checkout repository
@@ -32,7 +33,10 @@ jobs:
         id: install
         run: |
           echo "Installing dependencies for Split Translator Chrome Extension..."
-          npm ci
+          if ! npm ci; then
+            echo "Error: Failed to install dependencies"
+            exit 1
+          fi
           echo "Dependencies installed successfully"
           
       - name: Validate project structure
@@ -67,9 +71,13 @@ jobs:
         id: build
         run: |
           echo "Compiling TypeScript to JavaScript..."
-          npm run build
+          if ! npm run build; then
+            echo "Error: TypeScript compilation failed"
+            echo "status=failed" >> $GITHUB_OUTPUT
+            exit 1
+          fi
           echo "status=success" >> $GITHUB_OUTPUT
-          echo "TypeScript compilation completed"
+          echo "TypeScript compilation completed successfully"
           
       - name: Verify build artifacts
         id: verify
@@ -117,8 +125,10 @@ jobs:
           echo "  Source Directory: src/"
           echo "  Output Directory: dist/"
           
-      - name: Display development instructions
+      - name: Setup complete
+        id: setup-complete
         run: |
+          echo "status=success" >> $GITHUB_OUTPUT
           echo "🎉 Development environment setup complete!"
           echo ""
           echo "📋 Project Information:"
