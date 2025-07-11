@@ -8,6 +8,7 @@
   "customizations": {
     "vscode": {
       "extensions": [
+        "github.vscode-github-actions",
         "ms-vscode.vscode-typescript-next"
       ]
     }
