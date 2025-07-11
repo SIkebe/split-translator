@@ -236,7 +236,6 @@ function getDisplayBounds(displays, currentWindow) {
     ) || displays[0];
 
     console.log('Detected display:', display);
-    console.log('Current window position:', { left: currentWindow.left, top: currentWindow.top, width: currentWindow.width, height: currentWindow.height });
 
     // Use entire display bounds instead of work area
     bounds = {
