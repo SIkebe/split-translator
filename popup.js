@@ -16,11 +16,13 @@ document.addEventListener('DOMContentLoaded', function() {
   // Initialize status text span
   ensureStatusTextSpan();
 
+  // Set initial status message
+  updateStatus('Select a language and click "Split + Translate"', 'info');
+
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {
-    let statusTextSpan = statusDiv.querySelector('.status-text');
     ensureStatusTextSpan();
-    statusTextSpan = statusDiv.querySelector('.status-text');
+    const statusTextSpan = statusDiv.querySelector('.status-text');
     statusTextSpan.textContent = message;
     statusDiv.classList.remove('info', 'error', 'success');
     statusDiv.classList.add(type);
@@ -33,22 +35,6 @@ document.addEventListener('DOMContentLoaded', function() {
         statusDiv.setAttribute('aria-live', 'polite');
       }, 100);
     }
-  }
-
-  // Helper function for accessible error messages
-  function getAccessibleErrorMessage(errorMessage) {
-    const errorMessageMap = {
-      'ERR_WINDOW_TOO_SMALL': 'Window size is too small. Please maximize the browser and try again.',
-      'ERR_SCREEN_INFO_MISSING': 'Failed to get screen information. Please reload the page and try again.',
-      'ERR_PAGE_TYPE_UNSUPPORTED': 'This page type cannot be translated. Please try on a regular website.',
-      'ERR_INVALID_TAB_INFO': 'The tab information is invalid. Please check your browser settings or try again.'
-    };
-
-    if (errorMessageMap[errorMessage]) {
-      return errorMessageMap[errorMessage];
-    }
-
-    return errorMessage;
   }
 
   // Initialize focus management
@@ -163,16 +149,7 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } catch (error) {
       console.error('Split + translation error:', error);
-
-      // Display detailed error messages with better accessibility
-      let errorMessage = getAccessibleErrorMessage(error.message);
-
-      updateStatus(`Error: ${errorMessage}`, 'error');
-
-      // Restore original status after 5 seconds
-      setTimeout(() => {
-        updateStatus('Select a language and click "Split + Translate"', 'info');
-      }, 5000);
+      updateStatus(`Error: ${error.message}`, 'error');
     } finally {
       splitAndTranslateButton.disabled = false;
       splitAndTranslateButton.removeAttribute('aria-busy');

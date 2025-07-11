@@ -31,7 +31,7 @@ async function handleSplitView(currentTab, targetLanguage) {
 
     // Validate current tab
     if (!currentTab || !currentTab.url || typeof currentTab.windowId !== 'number') {
-      throw new Error('ERR_INVALID_TAB_INFO');
+      throw new Error('The tab information is invalid. Please check your browser settings or try again.');
     }
 
     // Check if URL can be translated
@@ -40,8 +40,9 @@ async function handleSplitView(currentTab, targetLanguage) {
         currentTab.url.startsWith('about:') ||
         currentTab.url.startsWith('chrome-extension://') ||
         currentTab.url.startsWith('edge-extension://') ||
-        currentTab.url.startsWith('file://')) {
-      throw new Error('ERR_PAGE_TYPE_UNSUPPORTED');
+        currentTab.url.startsWith('file://') ||
+        currentTab.url.includes('translate.goog')) {
+      throw new Error('This page type cannot be translated. Please try on a regular website.');
     }
 
     // Get current window information
