@@ -103,7 +103,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle Tab key for focus management
     if (event.key === 'Tab') {
-      // Recalculate focusable elements to handle dynamic changes
+      // Recalculate focusable elements each time to handle dynamic changes
+      // (e.g., status updates, disabled states)
       const focusable = getFocusableElements();
 
       if (focusable.first && focusable.last) {
