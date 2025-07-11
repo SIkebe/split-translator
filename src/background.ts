@@ -1,6 +1,6 @@
 // Background script (Service Worker)
 
-import { SplitAndTranslateMessage, SplitViewData, WindowPosition, DisplayBounds } from './types.js';
+import { SplitAndTranslateMessage, SplitViewData, WindowPosition, DisplayBounds } from './types';
 
 // Constants
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps
@@ -184,7 +184,7 @@ async function handleSplitAndTranslate(currentTab: chrome.tabs.Tab, targetLangua
 }
 
 // Get display information (helper function)
-async function getDisplayInfo(): Promise<chrome.system.display.DisplayInfo[]> {
+async function getDisplayInfo(): Promise<chrome.system.display.DisplayUnitInfo[]> {
   if (!chrome.system?.display) return [];
 
   return new Promise((resolve) => {
