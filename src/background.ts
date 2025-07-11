@@ -184,7 +184,7 @@ async function handleSplitAndTranslate(currentTab: chrome.tabs.Tab, targetLangua
 }
 
 // Get display information (helper function)
-async function getDisplayInfo(): Promise<any[]> {
+async function getDisplayInfo(): Promise<chrome.system.display.DisplayInfo[]> {
   if (!chrome.system?.display) return [];
 
   return new Promise((resolve) => {

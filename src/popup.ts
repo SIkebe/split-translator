@@ -51,7 +51,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Helper function to get current focusable elements
   function getFocusableElements(): FocusableElements {
-    const elements = document.querySelectorAll(
+    const elements = document.querySelectorAll<HTMLElement>(
       'button, select, input, [tabindex]:not([tabindex="-1"])'
     );
     return {

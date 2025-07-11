@@ -19,20 +19,16 @@ export interface SplitViewData {
   duplicatedWindowId: number;
 }
 
-export interface WindowPosition {
+export interface Bounds {
   left: number;
   top: number;
   width: number;
   height: number;
 }
 
-export interface DisplayBounds {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
+export interface WindowPosition extends Bounds {}
 
+export interface DisplayBounds extends Bounds {}
 export interface FocusableElements {
   elements: NodeListOf<Element>;
   first: Element | null;
