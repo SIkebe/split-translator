@@ -1,6 +1,6 @@
 // Background script (Service Worker)
 
-import { SplitAndTranslateMessage, SplitViewData, WindowPosition, DisplayBounds } from './types';
+/// <reference path="shared-types.ts" />
 
 // Constants
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps

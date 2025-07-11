@@ -1,6 +1,6 @@
 // Popup script
 
-import { SplitAndTranslateResponse, SplitAndTranslateMessage, FocusableElements } from './types.js';
+/// <reference path="shared-types.ts" />
 
 document.addEventListener('DOMContentLoaded', function() {
   const splitAndTranslateButton = document.getElementById('splitAndTranslate') as HTMLButtonElement;

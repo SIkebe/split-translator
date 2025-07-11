@@ -1,17 +1,20 @@
 // Shared type definitions for Split Translator extension
 
-export interface SplitAndTranslateResponse {
+// Response interfaces
+interface SplitAndTranslateResponse {
   success: boolean;
   error?: string;
 }
 
-export interface SplitAndTranslateMessage {
+// Message interfaces
+interface SplitAndTranslateMessage {
   action: 'splitAndTranslate';
   currentTab: chrome.tabs.Tab;
   targetLanguage: string;
 }
 
-export interface SplitViewData {
+// Data interfaces
+interface SplitViewData {
   originalTabId: number;
   duplicatedTabId: number;
   targetLanguage: string;
@@ -19,17 +22,20 @@ export interface SplitViewData {
   duplicatedWindowId: number;
 }
 
-export interface Bounds {
+// Geometry interfaces
+interface Bounds {
   left: number;
   top: number;
   width: number;
   height: number;
 }
 
-export interface WindowPosition extends Bounds {}
+interface WindowPosition extends Bounds {}
 
-export interface DisplayBounds extends Bounds {}
-export interface FocusableElements {
+interface DisplayBounds extends Bounds {}
+
+// UI interfaces
+interface FocusableElements {
   elements: NodeListOf<Element>;
   first: Element | null;
   last: Element | null;
