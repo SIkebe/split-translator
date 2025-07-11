@@ -6,7 +6,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {
-    statusDiv.textContent = message;
+    let textNode = Array.from(statusDiv.childNodes).find(node => node.nodeType === Node.TEXT_NODE);
+    if (textNode) {
+      textNode.nodeValue = message;
+    } else {
+      textNode = document.createTextNode(message);
+      statusDiv.appendChild(textNode);
+    }
     statusDiv.classList.remove('info', 'error', 'success');
     statusDiv.classList.add(type);
 
