@@ -4,48 +4,29 @@ document.addEventListener('DOMContentLoaded', function() {
   const targetLanguageSelect = document.getElementById('targetLanguage');
   const statusDiv = document.getElementById('status');
 
-  // Helper function to ensure `.status-text` span exists
-  function ensureStatusTextSpan() {
-    if (!statusDiv.querySelector('.status-text')) {
-      const statusTextSpan = document.createElement('span');
-      statusTextSpan.className = 'status-text';
-      statusDiv.appendChild(statusTextSpan);
-    }
-  }
-
-  // Initialize status text span
-  ensureStatusTextSpan();
-
-  // Set initial status message
-  updateStatus('Select a language and click "Split + Translate"', 'info');
+  // Initialize status text span (once only)
+  const statusTextSpan = document.createElement('span');
+  statusTextSpan.className = 'status-text';
+  statusDiv.appendChild(statusTextSpan);
 
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {
-    ensureStatusTextSpan();
-    const statusTextSpan = statusDiv.querySelector('.status-text');
     statusTextSpan.textContent = message;
     statusDiv.classList.remove('info', 'error', 'success');
     statusDiv.classList.add(type);
 
-    // Force screen reader announcement for important messages
+    // Force screen reader announcement for important messages only
     if (type === 'error' || type === 'success') {
       statusDiv.setAttribute('aria-live', 'assertive');
-      // The 100ms delay ensures screen readers announce the updated status message properly
-      setTimeout(() => {
-        statusDiv.setAttribute('aria-live', 'polite');
-      }, 100);
+      setTimeout(() => statusDiv.setAttribute('aria-live', 'polite'), 100);
     }
   }
 
-  // Initialize focus management
-  function initializeFocusManagement() {
-    // Set initial focus to the language select for better UX
-    setTimeout(() => {
-      targetLanguageSelect.focus();
-    }, 100);
-  }
+  // Set initial status message
+  updateStatus('Select a language and click "Split + Translate"', 'info');
 
-  initializeFocusManagement();
+  // Initialize focus management
+  setTimeout(() => targetLanguageSelect.focus(), 100);
 
   // Load saved language settings
   chrome.storage.sync.get(['targetLanguage'], function(result) {
@@ -60,8 +41,8 @@ document.addEventListener('DOMContentLoaded', function() {
       targetLanguage: targetLanguageSelect.value
     });
 
-    // Announce language change to screen readers
-    updateStatus(`Language selected: ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
+    // Announce language change to screen readers (simpler message)
+    updateStatus(`Language changed to ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
   });
 
   // Helper function to get current focusable elements
@@ -78,13 +59,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Unified keyboard navigation support
   document.addEventListener('keydown', function(event) {
-    // Handle Enter key on button
-    if (event.key === 'Enter' && event.target === splitAndTranslateButton) {
-      event.preventDefault();
-      splitAndTranslateButton.click();
-      return;
-    }
-
     // Handle Escape key to close popup
     if (event.key === 'Escape') {
       window.close();
@@ -93,21 +67,15 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Handle Tab key for focus management
     if (event.key === 'Tab') {
-      // Recalculate focusable elements each time to handle dynamic changes
-      // (e.g., status updates, disabled states)
       const focusable = getFocusableElements();
 
       if (focusable.first && focusable.last) {
-        if (event.shiftKey) {
-          if (document.activeElement === focusable.first) {
-            event.preventDefault();
-            focusable.last.focus();
-          }
-        } else {
-          if (document.activeElement === focusable.last) {
-            event.preventDefault();
-            focusable.first.focus();
-          }
+        if (event.shiftKey && document.activeElement === focusable.first) {
+          event.preventDefault();
+          focusable.last.focus();
+        } else if (!event.shiftKey && document.activeElement === focusable.last) {
+          event.preventDefault();
+          focusable.first.focus();
         }
       }
     }
@@ -117,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
   splitAndTranslateButton.addEventListener('click', async function() {
     try {
       splitAndTranslateButton.disabled = true;
-      splitAndTranslateButton.setAttribute('aria-disabled', 'true');
       splitAndTranslateButton.setAttribute('aria-busy', 'true');
       updateStatus('Getting current tab information...', 'info');
 
@@ -153,7 +120,6 @@ document.addEventListener('DOMContentLoaded', function() {
     } finally {
       splitAndTranslateButton.disabled = false;
       splitAndTranslateButton.removeAttribute('aria-busy');
-      splitAndTranslateButton.removeAttribute('aria-disabled');
     }
   });
 });
