@@ -4,6 +4,8 @@
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps
 const MIN_WINDOW_WIDTH = 400; // Minimum window width in pixels
 const MIN_WINDOW_HEIGHT = 300; // Minimum window height in pixels
+const DEFAULT_WINDOW_WIDTH = 800; // Default window width when current window width is unavailable
+const DEFAULT_WINDOW_HEIGHT = 600; // Default window height when current window height is unavailable
 
 // Common error handler
 function handleError(error: Error, context: string): { success: false; error: string } {
@@ -256,14 +258,14 @@ function getDisplayBounds(displays: any[], currentWindow: chrome.windows.Window)
     bounds = {
       left: currentWindow.left || 0, // Preserve current window position
       top: currentWindow.top || 0,  // Preserve current window position
-      width: currentWindow.width || 800,
-      height: currentWindow.height || 600
+      width: currentWindow.width || DEFAULT_WINDOW_WIDTH,
+      height: currentWindow.height || DEFAULT_WINDOW_HEIGHT
     };
   } else {
     // Find the display to which the current window belongs
     // Use window center point for accurate detection
-    const windowCenterX = (currentWindow.left || 0) + ((currentWindow.width || 800) / 2);
-    const windowCenterY = (currentWindow.top || 0) + ((currentWindow.height || 600) / 2);
+    const windowCenterX = (currentWindow.left || 0) + ((currentWindow.width || DEFAULT_WINDOW_WIDTH) / 2);
+    const windowCenterY = (currentWindow.top || 0) + ((currentWindow.height || DEFAULT_WINDOW_HEIGHT) / 2);
 
     const display = displays.find(d =>
       windowCenterX >= d.workArea.left &&
