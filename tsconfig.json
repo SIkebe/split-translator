@@ -1,41 +1,24 @@
 {
   "compilerOptions": {
-    // ECMAScript 2020をターゲットとして設定（モダンな機能を使用可能）
     "target": "ES2020",
-    // ES2020モジュールシステムを使用
     "module": "ES2020",
-    // Node.jsスタイルのモジュール解決を使用
     "moduleResolution": "node",
-    // 厳密な型チェックを有効にする（型安全性を最大化）
     "strict": true,
-    // CommonJSとESModuleの相互運用を可能にする
     "esModuleInterop": true,
-    // TypeScriptライブラリのチェックをスキップ（コンパイル速度向上）
     "skipLibCheck": true,
-    // ファイル名の大文字小文字の一貫性を強制
     "forceConsistentCasingInFileNames": true,
-    // 型定義ファイル（.d.ts）を生成しない
     "declaration": false,
-    // コンパイル結果の出力先ディレクトリ
     "outDir": "./dist",
-    // ソースファイルのルートディレクトリ
     "rootDir": "./src",
-    // Chrome拡張機能の型定義を使用
     "types": ["chrome"],
-    // 使用するライブラリ（ES2020とDOMの機能を含む）
     "lib": ["ES2020", "DOM"],
-    // JavaScriptファイルの処理を無効化（TypeScriptのみ）
     "allowJs": false,
-    // JavaScriptファイルの型チェックを無効化
     "checkJs": false,
-    // エラーがある場合はファイルを出力しない
     "noEmitOnError": true
   },
-  // コンパイル対象ファイルのパターン
   "include": [
     "src/**/*"
   ],
-  // コンパイル対象から除外するディレクトリ
   "exclude": [
     "node_modules",
     "dist"
