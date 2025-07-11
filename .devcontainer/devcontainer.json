@@ -1,0 +1,17 @@
+{
+  "name": "Split Translator Development",
+  "image": "mcr.microsoft.com/devcontainers/javascript-node:22-bookworm",
+  "features": {
+    "ghcr.io/devcontainers/features/github-cli:1": {}
+  },
+  "postCreateCommand": "npm install",
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        "github.vscode-github-actions",
+        "ms-vscode.vscode-typescript-next"
+      ]
+    }
+  },
+  "remoteUser": "node"
+}

@@ -1,8 +1,11 @@
 // Popup script
+
+/// <reference path="shared-types.ts" />
+
 document.addEventListener('DOMContentLoaded', function() {
-  const splitAndTranslateButton = document.getElementById('splitAndTranslate');
-  const targetLanguageSelect = document.getElementById('targetLanguage');
-  const statusDiv = document.getElementById('status');
+  const splitAndTranslateButton = document.getElementById('splitAndTranslate') as HTMLButtonElement;
+  const targetLanguageSelect = document.getElementById('targetLanguage') as HTMLSelectElement;
+  const statusDiv = document.getElementById('status') as HTMLDivElement;
 
   // Initialize status text span (once only)
   const statusTextSpan = document.createElement('span');
@@ -10,7 +13,7 @@ document.addEventListener('DOMContentLoaded', function() {
   statusDiv.appendChild(statusTextSpan);
 
   // Helper function to update status with proper accessibility
-  function updateStatus(message, type = 'info') {
+  function updateStatus(message: string, type: 'info' | 'error' | 'success' = 'info'): void {
     statusTextSpan.textContent = message;
     statusDiv.classList.remove('info', 'error', 'success');
     statusDiv.classList.add(type);
@@ -29,7 +32,7 @@ document.addEventListener('DOMContentLoaded', function() {
   setTimeout(() => targetLanguageSelect.focus(), 100);
 
   // Load saved language settings
-  chrome.storage.sync.get(['targetLanguage'], function(result) {
+  chrome.storage.sync.get(['targetLanguage'], function(result: { targetLanguage?: string }) {
     if (result.targetLanguage) {
       targetLanguageSelect.value = result.targetLanguage;
     }
@@ -42,12 +45,13 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 
     // Announce language change to screen readers (simpler message)
-    updateStatus(`Language changed to ${targetLanguageSelect.options[targetLanguageSelect.selectedIndex].text}`, 'info');
+    const selectedOption = targetLanguageSelect.options[targetLanguageSelect.selectedIndex];
+    updateStatus(`Language changed to ${selectedOption.text}`, 'info');
   });
 
   // Helper function to get current focusable elements
-  function getFocusableElements() {
-    const elements = document.querySelectorAll(
+  function getFocusableElements(): FocusableElements {
+    const elements = document.querySelectorAll<HTMLElement>(
       'button, select, input, [tabindex]:not([tabindex="-1"])'
     );
     return {
@@ -58,7 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // Unified keyboard navigation support
-  document.addEventListener('keydown', function(event) {
+  document.addEventListener('keydown', function(event: KeyboardEvent) {
     // Handle Escape key to close popup
     if (event.key === 'Escape') {
       window.close();
@@ -72,10 +76,10 @@ document.addEventListener('DOMContentLoaded', function() {
       if (focusable.first && focusable.last) {
         if (event.shiftKey && document.activeElement === focusable.first) {
           event.preventDefault();
-          focusable.last.focus();
+          (focusable.last as HTMLElement).focus();
         } else if (!event.shiftKey && document.activeElement === focusable.last) {
           event.preventDefault();
-          focusable.first.focus();
+          (focusable.first as HTMLElement).focus();
         }
       }
     }
@@ -102,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
         action: 'splitAndTranslate',
         currentTab: currentTab,
         targetLanguage: targetLanguageSelect.value
-      });
+      } as SplitAndTranslateMessage) as SplitAndTranslateResponse;
 
       if (response.success) {
         updateStatus('Split + translation completed successfully!', 'success');
@@ -116,7 +120,8 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     } catch (error) {
       console.error('Split + translation error:', error);
-      updateStatus(`Error: ${error.message}`, 'error');
+      const errorMessage = error instanceof Error ? error.message : 'Unknown error occurred';
+      updateStatus(`Error: ${errorMessage}`, 'error');
     } finally {
       splitAndTranslateButton.disabled = false;
       splitAndTranslateButton.removeAttribute('aria-busy');

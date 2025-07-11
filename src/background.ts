@@ -1,12 +1,16 @@
 // Background script (Service Worker)
 
+/// <reference path="shared-types.ts" />
+
 // Constants
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps
 const MIN_WINDOW_WIDTH = 400; // Minimum window width in pixels
 const MIN_WINDOW_HEIGHT = 300; // Minimum window height in pixels
+const DEFAULT_WINDOW_WIDTH = 800; // Default window width when current window width is unavailable
+const DEFAULT_WINDOW_HEIGHT = 600; // Default window height when current window height is unavailable
 
 // Common error handler
-function handleError(error, context) {
+function handleError(error: Error, context: string): { success: false; error: string } {
   console.error(`${context}:`, error);
   return {
     success: false,
@@ -15,7 +19,7 @@ function handleError(error, context) {
 }
 
 // Message listener
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+chrome.runtime.onMessage.addListener((request: SplitAndTranslateMessage, sender, sendResponse) => {
   if (request.action === 'splitAndTranslate') {
     handleSplitAndTranslate(request.currentTab, request.targetLanguage)
       .then(result => sendResponse(result))
@@ -25,7 +29,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 });
 
 // Split view handling
-async function handleSplitView(currentTab, targetLanguage) {
+async function handleSplitView(currentTab: chrome.tabs.Tab, targetLanguage: string): Promise<{ success: true }> {
   try {
     console.log('Starting split view:', currentTab);
 
@@ -44,8 +48,8 @@ async function handleSplitView(currentTab, targetLanguage) {
       'file://',
     ];
 
-    if (UNSUPPORTED_PREFIXES.some(prefix => currentTab.url.startsWith(prefix)) ||
-        currentTab.url.includes('translate.goog')) {
+    if (UNSUPPORTED_PREFIXES.some(prefix => currentTab.url!.startsWith(prefix)) ||
+        currentTab.url!.includes('translate.goog')) {
       throw new Error('This page type cannot be translated. Please try on a regular website.');
     }
 
@@ -71,14 +75,14 @@ async function handleSplitView(currentTab, targetLanguage) {
     const rightWidth = halfWidth + OVERLAP_PIXELS;
 
     // Calculate positions (use entire display)
-    const leftPosition = {
+    const leftPosition: WindowPosition = {
       left: displayLeft,
       top: displayTop,
       width: leftWidth,
       height: displayHeight
     };
 
-    const rightPosition = {
+    const rightPosition: WindowPosition = {
       left: displayLeft + halfWidth - OVERLAP_PIXELS,
       top: displayTop,
       width: rightWidth,
@@ -96,6 +100,10 @@ async function handleSplitView(currentTab, targetLanguage) {
       state: 'normal'
     });
 
+    if (!rightWindow || !rightWindow.tabs || !rightWindow.tabs[0]?.id || !rightWindow.id) {
+      throw new Error('Failed to create right window');
+    }
+
     // Resize left window
     await chrome.windows.update(currentTab.windowId, {
       ...leftPosition,
@@ -103,8 +111,8 @@ async function handleSplitView(currentTab, targetLanguage) {
     });
 
     // Save data
-    const splitViewData = {
-      originalTabId: currentTab.id,
+    const splitViewData: SplitViewData = {
+      originalTabId: currentTab.id!,
       duplicatedTabId: rightWindow.tabs[0].id,
       targetLanguage: targetLanguage,
       originalWindowId: currentTab.windowId,
@@ -122,12 +130,12 @@ async function handleSplitView(currentTab, targetLanguage) {
 }
 
 // Execute split view and translation at once
-async function handleSplitAndTranslate(currentTab, targetLanguage) {
+async function handleSplitAndTranslate(currentTab: chrome.tabs.Tab, targetLanguage: string): Promise<{ success: true }> {
   try {
     console.log('Starting split view + translation:', currentTab);
 
     // Prepare translation URL in advance (for parallel processing)
-    const translateUrl = `https://translate.google.com/translate?sl=auto&tl=${targetLanguage}&u=${encodeURIComponent(currentTab.url)}`;
+    const translateUrl = `https://translate.google.com/translate?sl=auto&tl=${targetLanguage}&u=${encodeURIComponent(currentTab.url!)}`;
 
     // 1. Execute split view
     await handleSplitView(currentTab, targetLanguage);
@@ -148,7 +156,7 @@ async function handleSplitAndTranslate(currentTab, targetLanguage) {
     const currentUrl = rightTab.url;
 
     // Do nothing if URL is already Google Translate page
-    if (currentUrl.includes('translate.google.com')) {
+    if (currentUrl && currentUrl.includes('translate.google.com')) {
       console.log('Right tab is already a Google Translate page');
       return { success: true };
     }
@@ -176,7 +184,7 @@ async function handleSplitAndTranslate(currentTab, targetLanguage) {
 }
 
 // Get display information (helper function)
-async function getDisplayInfo() {
+async function getDisplayInfo(): Promise<chrome.system.display.DisplayUnitInfo[]> {
   if (!chrome.system?.display) return [];
 
   return new Promise((resolve) => {
@@ -192,7 +200,7 @@ async function getDisplayInfo() {
 }
 
 // Wait for tab to finish loading (helper function)
-async function waitForTabReady(tabId, maxWaitTime = 3000) {
+async function waitForTabReady(tabId: number, maxWaitTime: number = 3000): Promise<void> {
   const startTime = Date.now();
   while (Date.now() - startTime < maxWaitTime) {
     try {
@@ -206,7 +214,7 @@ async function waitForTabReady(tabId, maxWaitTime = 3000) {
 }
 
 // Helper function to enforce minimum dimensions
-function enforceMinimumDimensions(bounds) {
+function enforceMinimumDimensions(bounds: DisplayBounds): DisplayBounds {
   return {
     ...bounds,
     width: Math.max(bounds.width, MIN_WINDOW_WIDTH),
@@ -215,22 +223,22 @@ function enforceMinimumDimensions(bounds) {
 }
 
 // Get display bounds (helper function)
-function getDisplayBounds(displays, currentWindow) {
-  let bounds;
+function getDisplayBounds(displays: any[], currentWindow: chrome.windows.Window): DisplayBounds {
+  let bounds: DisplayBounds;
 
   if (!displays || !displays.length) {
     console.warn('No display information available, using current window bounds');
     bounds = {
-      left: currentWindow.left, // Preserve current window position
-      top: currentWindow.top,  // Preserve current window position
-      width: currentWindow.width,
-      height: currentWindow.height
+      left: currentWindow.left ?? 0, // Preserve current window position
+      top: currentWindow.top ?? 0,  // Preserve current window position
+      width: currentWindow.width ?? DEFAULT_WINDOW_WIDTH,
+      height: currentWindow.height ?? DEFAULT_WINDOW_HEIGHT
     };
   } else {
     // Find the display to which the current window belongs
     // Use window center point for accurate detection
-    const windowCenterX = currentWindow.left + (currentWindow.width / 2);
-    const windowCenterY = currentWindow.top + (currentWindow.height / 2);
+    const windowCenterX = (currentWindow.left ?? 0) + ((currentWindow.width ?? DEFAULT_WINDOW_WIDTH) / 2);
+    const windowCenterY = (currentWindow.top ?? 0) + ((currentWindow.height ?? DEFAULT_WINDOW_HEIGHT) / 2);
 
     const display = displays.find(d =>
       windowCenterX >= d.workArea.left &&
