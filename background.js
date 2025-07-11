@@ -30,8 +30,8 @@ async function handleSplitView(currentTab, targetLanguage) {
     console.log('Starting split view:', currentTab);
 
     // Validate current tab
-    if (!currentTab || !currentTab.url) {
-      throw new Error('Invalid tab information');
+    if (!currentTab || !currentTab.url || typeof currentTab.windowId !== 'number') {
+      throw new Error('Invalid tab information: Missing URL or windowId');
     }
 
     // Check if URL can be translated

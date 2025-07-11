@@ -72,8 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
   const focusableElements = document.querySelectorAll(
     'button, select, input, [tabindex]:not([tabindex="-1"])'
   );
-  const firstFocusable = focusableElements[0];
-  const lastFocusable = focusableElements[focusableElements.length - 1];
+  let firstFocusable = null;
+  let lastFocusable = null;
+  if (focusableElements.length > 0) {
+    firstFocusable = focusableElements[0];
+    lastFocusable = focusableElements[focusableElements.length - 1];
+  }
 
   // Unified keyboard navigation support
   document.addEventListener('keydown', function(event) {
