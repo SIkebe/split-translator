@@ -29,16 +29,14 @@ document.addEventListener('DOMContentLoaded', function() {
   // Helper function for accessible error messages
   function getAccessibleErrorMessage(errorMessage) {
     const errorMessageMap = {
-      'minimum': 'Window size is too small. Please maximize the browser and try again.',
-      'not defined': 'Failed to get screen information. Please reload the page and try again.',
-      'cannot be translated': 'This page type cannot be translated. Please try on a regular website.',
-      'Invalid tab information': 'The tab information is invalid. Please check your browser settings or try again.'
+      'ERR_WINDOW_TOO_SMALL': 'Window size is too small. Please maximize the browser and try again.',
+      'ERR_SCREEN_INFO_MISSING': 'Failed to get screen information. Please reload the page and try again.',
+      'ERR_PAGE_TYPE_UNSUPPORTED': 'This page type cannot be translated. Please try on a regular website.',
+      'ERR_INVALID_TAB_INFO': 'The tab information is invalid. Please check your browser settings or try again.'
     };
 
-    for (const key in errorMessageMap) {
-      if (errorMessage.toLowerCase().includes(key.toLowerCase())) {
-        return errorMessageMap[key];
-      }
+    if (errorMessageMap[errorMessage]) {
+      return errorMessageMap[errorMessage];
     }
 
     return errorMessage;

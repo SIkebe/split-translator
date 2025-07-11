@@ -41,7 +41,7 @@ async function handleSplitView(currentTab, targetLanguage) {
         currentTab.url.startsWith('chrome-extension://') ||
         currentTab.url.startsWith('edge-extension://') ||
         currentTab.url.startsWith('file://')) {
-      throw new Error('This page cannot be translated');
+      throw new Error('This page type cannot be translated');
     }
 
     // Get current window information
