@@ -3,7 +3,6 @@ document.addEventListener('DOMContentLoaded', function() {
   const splitAndTranslateButton = document.getElementById('splitAndTranslate');
   const targetLanguageSelect = document.getElementById('targetLanguage');
   const statusDiv = document.getElementById('status');
-  ensureStatusTextSpan();
 
   // Helper function to ensure `.status-text` span exists
   function ensureStatusTextSpan() {
@@ -13,6 +12,9 @@ document.addEventListener('DOMContentLoaded', function() {
       statusDiv.appendChild(statusTextSpan);
     }
   }
+
+  // Initialize status text span
+  ensureStatusTextSpan();
 
   // Helper function to update status with proper accessibility
   function updateStatus(message, type = 'info') {

@@ -31,7 +31,7 @@ async function handleSplitView(currentTab, targetLanguage) {
 
     // Validate current tab
     if (!currentTab || !currentTab.url || typeof currentTab.windowId !== 'number') {
-      throw new Error(ERR_INVALID_TAB_INFO);
+      throw new Error('ERR_INVALID_TAB_INFO');
     }
 
     // Check if URL can be translated
@@ -211,41 +211,42 @@ function enforceMinimumDimensions(bounds) {
 
 // Get display bounds (helper function)
 function getDisplayBounds(displays, currentWindow) {
+  let bounds;
+
   if (!displays || !displays.length) {
     console.warn('No display information available, using current window bounds');
-    const fallbackBounds = {
+    bounds = {
       left: currentWindow.left, // Preserve current window position
       top: currentWindow.top,  // Preserve current window position
       width: currentWindow.width,
       height: currentWindow.height
     };
-    return enforceMinimumDimensions(fallbackBounds);
+  } else {
+    // Find the display to which the current window belongs
+    // Use window center point for accurate detection
+    const windowCenterX = currentWindow.left + (currentWindow.width / 2);
+    const windowCenterY = currentWindow.top + (currentWindow.height / 2);
+
+    const display = displays.find(d =>
+      windowCenterX >= d.workArea.left &&
+      windowCenterX < d.workArea.left + d.workArea.width &&
+      windowCenterY >= d.workArea.top &&
+      windowCenterY < d.workArea.top + d.workArea.height
+    ) || displays[0];
+
+    console.log('Detected display:', display);
+    console.log('Current window position:', { left: currentWindow.left, top: currentWindow.top, width: currentWindow.width, height: currentWindow.height });
+
+    // Use entire display bounds instead of work area
+    bounds = {
+      left: display.workArea.left,
+      top: display.workArea.top,
+      width: display.workArea.width,
+      height: display.workArea.height
+    };
   }
 
-  // Find the display to which the current window belongs
-  // Use window center point for accurate detection
-  const windowCenterX = currentWindow.left + (currentWindow.width / 2);
-  const windowCenterY = currentWindow.top + (currentWindow.height / 2);
-
-  const display = displays.find(d =>
-    windowCenterX >= d.workArea.left &&
-    windowCenterX < d.workArea.left + d.workArea.width &&
-    windowCenterY >= d.workArea.top &&
-    windowCenterY < d.workArea.top + d.workArea.height
-  ) || displays[0];
-
-  console.log('Detected display:', display);
-  console.log('Current window position:', { left: currentWindow.left, top: currentWindow.top, width: currentWindow.width, height: currentWindow.height });
-
-  // Use entire display bounds instead of work area
-  const displayBounds = {
-    left: display.workArea.left,
-    top: display.workArea.top,
-    width: display.workArea.width,
-    height: display.workArea.height
-  };
-
-  return enforceMinimumDimensions(displayBounds);
+  return enforceMinimumDimensions(bounds);
 }
 
 // Extension installation handler
