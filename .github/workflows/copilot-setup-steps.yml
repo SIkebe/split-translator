@@ -1,163 +1,41 @@
-name: Copilot Setup Steps
+name: "Copilot Setup Steps"
 
+# Automatically run the setup steps when they are changed to allow for easy validation, and
+# allow manual testing through the repository's "Actions" tab
 on:
   workflow_dispatch:
   push:
-    branches: [main, develop]
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
   pull_request:
-    branches: [main]
+    paths:
+      - .github/workflows/copilot-setup-steps.yml
 
 jobs:
-  setup:
-    name: Setup Development Environment
+  # The job MUST be called `copilot-setup-steps` or it will not be picked up by Copilot.
+  copilot-setup-steps:
     runs-on: ubuntu-latest
-    
-    outputs:
-      node-version: ${{ steps.environment.outputs.node-version }}
-      typescript-version: ${{ steps.environment.outputs.typescript-version }}
-      build-status: ${{ steps.build.outputs.status }}
-      setup-status: ${{ steps.setup-complete.outputs.status }}
-      
+
+    # Set the permissions to the lowest permissions possible needed for your steps.
+    # Copilot will be given its own token for its operations.
+    permissions:
+      # If you want to clone the repository as part of your setup steps, for example to install dependencies, you'll need the `contents: read` permission. If you don't clone the repository in your setup steps, Copilot will do this for you automatically after the steps complete.
+      contents: read
+
+    # You can define any steps you want, and they will run before the agent starts.
+    # If you do not check out your code, Copilot will do this for you.
     steps:
-      - name: Checkout repository
+      - name: Checkout code
         uses: actions/checkout@v4
-        
-      - name: Setup Node.js environment
-        id: node-setup
+
+      - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
-          cache: 'npm'
-          
-      - name: Install project dependencies
-        id: install
-        run: |
-          echo "Installing dependencies for Split Translator Chrome Extension..."
-          if ! npm ci; then
-            echo "Error: Failed to install dependencies"
-            exit 1
-          fi
-          echo "Dependencies installed successfully"
-          
-      - name: Validate project structure
-        id: validate
-        run: |
-          echo "Validating Chrome extension structure..."
-          
-          # Check required files exist
-          if [[ ! -f "manifest.json" ]]; then
-            echo "Error: manifest.json not found"
-            exit 1
-          fi
-          
-          if [[ ! -f "popup.html" ]]; then
-            echo "Error: popup.html not found"
-            exit 1
-          fi
-          
-          if [[ ! -d "src" ]]; then
-            echo "Error: src directory not found"
-            exit 1
-          fi
-          
-          if [[ ! -f "tsconfig.json" ]]; then
-            echo "Error: tsconfig.json not found"
-            exit 1
-          fi
-          
-          echo "Project structure validation passed"
-          
-      - name: Compile TypeScript sources
-        id: build
-        run: |
-          echo "Compiling TypeScript to JavaScript..."
-          if ! npm run build; then
-            echo "Error: TypeScript compilation failed"
-            echo "status=failed" >> $GITHUB_OUTPUT
-            exit 1
-          fi
-          echo "status=success" >> $GITHUB_OUTPUT
-          echo "TypeScript compilation completed successfully"
-          
-      - name: Verify build artifacts
-        id: verify
-        run: |
-          echo "Verifying build output..."
-          
-          # Check dist directory exists and contains expected files
-          if [[ ! -d "dist" ]]; then
-            echo "Error: dist directory not created"
-            exit 1
-          fi
-          
-          if [[ ! -f "dist/background.js" ]]; then
-            echo "Error: background.js not generated"
-            exit 1
-          fi
-          
-          if [[ ! -f "dist/popup.js" ]]; then
-            echo "Error: popup.js not generated"
-            exit 1
-          fi
-          
-          # Check JavaScript syntax
-          node -c dist/background.js || (echo "Error: background.js has syntax errors" && exit 1)
-          node -c dist/popup.js || (echo "Error: popup.js has syntax errors" && exit 1)
-          
-          echo "Build artifacts verification passed"
-          ls -la dist/
-          
-      - name: Set environment information
-        id: environment
-        run: |
-          NODE_VERSION=$(node --version)
-          TS_VERSION=$(npx tsc --version)
-          
-          echo "node-version=$NODE_VERSION" >> $GITHUB_OUTPUT
-          echo "typescript-version=$TS_VERSION" >> $GITHUB_OUTPUT
-          
-          echo "Environment Information:"
-          echo "  Node.js: $NODE_VERSION"
-          echo "  TypeScript: $TS_VERSION"
-          echo "  Project: Split Translator Chrome Extension"
-          echo "  Language: TypeScript"
-          echo "  Build Tool: TypeScript Compiler (tsc)"
-          echo "  Source Directory: src/"
-          echo "  Output Directory: dist/"
-          
-      - name: Setup complete
-        id: setup-complete
-        run: |
-          echo "status=success" >> $GITHUB_OUTPUT
-          echo "🎉 Development environment setup complete!"
-          echo ""
-          echo "📋 Project Information:"
-          echo "  Name: Split Translator Chrome Extension"
-          echo "  Type: Browser Extension (Chrome/Edge)"
-          echo "  Language: TypeScript"
-          echo "  Framework: Chrome Extension Manifest V3"
-          echo ""
-          echo "🛠️ Available Commands:"
-          echo "  npm run build   - Compile TypeScript to JavaScript"
-          echo "  npm run watch   - Watch mode for development"
-          echo "  npm run dev     - Clean build with instructions"
-          echo "  npm run clean   - Clean build directory"
-          echo ""
-          echo "🔧 Development Workflow:"
-          echo "  1. Make changes to TypeScript files in src/"
-          echo "  2. Run 'npm run build' or 'npm run watch'"
-          echo "  3. Compiled JavaScript appears in dist/"
-          echo "  4. Load extension in Chrome for testing"
-          echo ""
-          echo "🌐 Loading Extension in Chrome:"
-          echo "  1. Run 'npm run dev' to build"
-          echo "  2. Open Chrome and go to chrome://extensions/"
-          echo "  3. Enable 'Developer mode'"
-          echo "  4. Click 'Load unpacked'"
-          echo "  5. Select the project root directory"
-          echo ""
-          echo "📁 File Structure:"
-          echo "  src/background.ts → dist/background.js (Service Worker)"
-          echo "  src/popup.ts      → dist/popup.js      (Popup Script)"
-          echo "  manifest.json     → Extension Manifest"
-          echo "  popup.html        → Extension Popup UI"
+          node-version: "20"
+          cache: "npm"
+
+      - name: Install JavaScript dependencies
+        run: npm install
+
+      - name: Build TypeScript project
+        run: npm run build
