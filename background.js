@@ -226,12 +226,12 @@ function getDisplayBounds(displays, currentWindow) {
   console.log('Detected display:', display);
   console.log('Current window position:', { left: currentWindow.left, top: currentWindow.top, width: currentWindow.width, height: currentWindow.height });
 
-  // Use entire display bounds instead of work area
+  // Use entire display bounds instead of work area, enforcing minimum dimensions
   return {
     left: display.workArea.left,
     top: display.workArea.top,
-    width: display.workArea.width,
-    height: display.workArea.height
+    width: display.workArea.width < MIN_WINDOW_WIDTH ? MIN_WINDOW_WIDTH : display.workArea.width,
+    height: display.workArea.height < MIN_WINDOW_HEIGHT ? MIN_WINDOW_HEIGHT : display.workArea.height
   };
 }
 
