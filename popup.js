@@ -19,6 +19,7 @@ document.addEventListener('DOMContentLoaded', function() {
     // Force screen reader announcement for important messages
     if (type === 'error' || type === 'success') {
       statusDiv.setAttribute('aria-live', 'assertive');
+      // The 100ms delay ensures screen readers announce the updated status message properly
       setTimeout(() => {
         statusDiv.setAttribute('aria-live', 'polite');
       }, 100);
@@ -27,17 +28,20 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Helper function for accessible error messages
   function getAccessibleErrorMessage(errorMessage) {
-    if (errorMessage.includes('minimum')) {
-      return 'Window size is too small. Please maximize the browser and try again.';
-    } else if (errorMessage.includes('not defined')) {
-      return 'Failed to get screen information. Please reload the page and try again.';
-    } else if (errorMessage.includes('cannot be translated')) {
-      return 'This page type cannot be translated. Please try on a regular website.';
-    } else if (errorMessage.includes('Invalid tab information')) {
-      return 'The tab information is invalid. Please check your browser settings or try again.';
-    } else {
-      return errorMessage;
+    const errorMessageMap = {
+      'minimum': 'Window size is too small. Please maximize the browser and try again.',
+      'not defined': 'Failed to get screen information. Please reload the page and try again.',
+      'cannot be translated': 'This page type cannot be translated. Please try on a regular website.',
+      'Invalid tab information': 'The tab information is invalid. Please check your browser settings or try again.'
+    };
+
+    for (const key in errorMessageMap) {
+      if (errorMessage.includes(key)) {
+        return errorMessageMap[key];
+      }
     }
+
+    return errorMessage;
   }
 
   // Initialize focus management
@@ -48,7 +52,6 @@ document.addEventListener('DOMContentLoaded', function() {
     }, 100);
   }
 
-  // Initialize focus management
   initializeFocusManagement();
 
   // Load saved language settings

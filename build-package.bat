@@ -26,7 +26,14 @@ powershell -Command "& { Add-Type -AssemblyName System.IO.Compression.FileSystem
 REM Check if size is under 10MB (Chrome Web Store limit)
 REM Display package size
 echo [INFO] Package size:
-powershell -Command "& { $size = (Get-Item 'dist\split-translator.zip').Length; Write-Host \"   Size: $([math]::Round($size/1KB, 2)) KB\"; if ($size -gt 10485760) { Write-Host '[ERROR] Package size exceeds 10MB limit!' -ForegroundColor Red; exit 1 } }"
+powershell -Command @"
+$size = (Get-Item 'dist\split-translator.zip').Length
+Write-Host "   Size: $([math]::Round($size/1KB, 2)) KB"
+if ($size -gt 10485760) {
+    Write-Host '[ERROR] Package size exceeds 10MB limit!' -ForegroundColor Red
+    exit 1
+}
+"@
 echo.
 echo Ready to upload to Chrome Web Store!
 echo.
