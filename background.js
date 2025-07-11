@@ -35,12 +35,16 @@ async function handleSplitView(currentTab, targetLanguage) {
     }
 
     // Check if URL can be translated
-    if (currentTab.url.startsWith('chrome://') ||
-        currentTab.url.startsWith('edge://') ||
-        currentTab.url.startsWith('about:') ||
-        currentTab.url.startsWith('chrome-extension://') ||
-        currentTab.url.startsWith('edge-extension://') ||
-        currentTab.url.startsWith('file://') ||
+    const UNSUPPORTED_PREFIXES = [
+      'chrome://',
+      'edge://',
+      'about:',
+      'chrome-extension://',
+      'edge-extension://',
+      'file://',
+    ];
+
+    if (UNSUPPORTED_PREFIXES.some(prefix => currentTab.url.startsWith(prefix)) ||
         currentTab.url.includes('translate.goog')) {
       throw new Error('This page type cannot be translated. Please try on a regular website.');
     }
