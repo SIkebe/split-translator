@@ -76,7 +76,7 @@ async function handleSplitView(currentTab: chrome.tabs.Tab, targetLanguage: stri
     ];
 
     if (UNSUPPORTED_PREFIXES.some(prefix => currentTab.url!.startsWith(prefix)) ||
-        currentTab.url.includes('translate.goog')) {
+        currentTab.url!.includes('translate.goog')) {
       throw new Error('This page type cannot be translated. Please try on a regular website.');
     }
 
