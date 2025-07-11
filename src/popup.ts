@@ -1,22 +1,6 @@
 // Popup script
 
-// Type definitions
-interface SplitAndTranslateResponse {
-  success: boolean;
-  error?: string;
-}
-
-interface SplitAndTranslateMessage {
-  action: 'splitAndTranslate';
-  currentTab: chrome.tabs.Tab;
-  targetLanguage: string;
-}
-
-interface FocusableElements {
-  elements: NodeListOf<Element>;
-  first: Element | null;
-  last: Element | null;
-}
+import { SplitAndTranslateResponse, SplitAndTranslateMessage, FocusableElements } from './types.js';
 
 document.addEventListener('DOMContentLoaded', function() {
   const splitAndTranslateButton = document.getElementById('splitAndTranslate') as HTMLButtonElement;

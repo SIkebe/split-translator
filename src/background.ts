@@ -1,5 +1,7 @@
 // Background script (Service Worker)
 
+import { SplitAndTranslateMessage, SplitViewData, WindowPosition, DisplayBounds } from './types.js';
+
 // Constants
 const OVERLAP_PIXELS = 8; // Compensate for window frame gaps
 const MIN_WINDOW_WIDTH = 400; // Minimum window width in pixels
@@ -14,35 +16,6 @@ function handleError(error: Error, context: string): { success: false; error: st
     success: false,
     error: error.message || 'Unknown error'
   };
-}
-
-// Types for message handling
-interface SplitAndTranslateMessage {
-  action: 'splitAndTranslate';
-  currentTab: chrome.tabs.Tab;
-  targetLanguage: string;
-}
-
-interface SplitViewData {
-  originalTabId: number;
-  duplicatedTabId: number;
-  targetLanguage: string;
-  originalWindowId: number;
-  duplicatedWindowId: number;
-}
-
-interface WindowPosition {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
-}
-
-interface DisplayBounds {
-  left: number;
-  top: number;
-  width: number;
-  height: number;
 }
 
 // Message listener
@@ -256,16 +229,16 @@ function getDisplayBounds(displays: any[], currentWindow: chrome.windows.Window)
   if (!displays || !displays.length) {
     console.warn('No display information available, using current window bounds');
     bounds = {
-      left: currentWindow.left || 0, // Preserve current window position
-      top: currentWindow.top || 0,  // Preserve current window position
-      width: currentWindow.width || DEFAULT_WINDOW_WIDTH,
-      height: currentWindow.height || DEFAULT_WINDOW_HEIGHT
+      left: currentWindow.left ?? 0, // Preserve current window position
+      top: currentWindow.top ?? 0,  // Preserve current window position
+      width: currentWindow.width ?? DEFAULT_WINDOW_WIDTH,
+      height: currentWindow.height ?? DEFAULT_WINDOW_HEIGHT
     };
   } else {
     // Find the display to which the current window belongs
     // Use window center point for accurate detection
-    const windowCenterX = (currentWindow.left || 0) + ((currentWindow.width || DEFAULT_WINDOW_WIDTH) / 2);
-    const windowCenterY = (currentWindow.top || 0) + ((currentWindow.height || DEFAULT_WINDOW_HEIGHT) / 2);
+    const windowCenterX = (currentWindow.left ?? 0) + ((currentWindow.width ?? DEFAULT_WINDOW_WIDTH) / 2);
+    const windowCenterY = (currentWindow.top ?? 0) + ((currentWindow.height ?? DEFAULT_WINDOW_HEIGHT) / 2);
 
     const display = displays.find(d =>
       windowCenterX >= d.workArea.left &&
