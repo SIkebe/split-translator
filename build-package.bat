@@ -32,8 +32,14 @@ Write-Host "   Size: $([math]::Round($size/(1024*1024), 2)) MB"
 if ($size -gt 10485760) {
     Write-Host '[ERROR] Package size exceeds 10MB limit!' -ForegroundColor Red
     exit 1
+} else {
+    exit 0
 }
 "@
+if %ERRORLEVEL% neq 0 (
+    echo [ERROR] Package creation failed due to size limit.
+    exit /B %ERRORLEVEL%
+)
 echo.
 echo Ready to upload to Chrome Web Store!
 echo.
