@@ -1,0 +1,45 @@
+{
+  "extends": "./tsconfig.json",
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "CommonJS",
+    "strict": false,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "declaration": false,
+    "outDir": "./dist-test",
+    "rootDir": "./",
+    "types": ["chrome", "jest", "node"],
+    "lib": ["ES2020", "DOM"],
+    "allowJs": true,
+    "checkJs": false,
+    "noEmitOnError": false,
+    "removeComments": false,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": false,
+    "resolveJsonModule": true,
+    // Enhanced performance optimizations
+    "incremental": true,
+    "tsBuildInfoFile": "./dist-test/.tsbuildinfo",
+    "noImplicitAny": false,
+    "noImplicitReturns": false,
+    "noImplicitThis": false,
+    "noUnusedLocals": false,
+    "noUnusedParameters": false,
+    // Additional speed optimizations
+    "noStrictGenericChecks": true,
+    "suppressExcessPropertyErrors": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "skipDefaultLibCheck": true
+  },
+  "include": [
+    "src/**/*",
+    "tests/**/*"
+  ],
+  "exclude": [
+    "node_modules",
+    "dist",
+    "coverage"
+  ]
+}

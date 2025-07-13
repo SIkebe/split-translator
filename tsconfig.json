@@ -9,7 +9,7 @@
     "declaration": false,
     "outDir": "./dist",
     "rootDir": "./src",
-    "types": ["chrome"],
+    "types": ["chrome", "node"],
     "lib": ["ES2020", "DOM"],
     "allowJs": false,
     "checkJs": false,

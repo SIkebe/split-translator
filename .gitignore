@@ -65,6 +65,10 @@ pids/
 coverage/
 *.lcov
 
+# Test results
+test-results/
+junit.xml
+
 # Dev Container
 .devcontainer/.env
 
