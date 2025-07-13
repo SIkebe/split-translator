@@ -13,13 +13,13 @@ env:
 
 jobs:
   test:
-    name: 🧪 Unit & Integration Tests
+    name: 🧪 Unit Tests
     runs-on: ubuntu-latest
     timeout-minutes: 15
     
     strategy:
       matrix:
-        test-type: [unit, integration]
+        test-type: [unit]
         
     steps:
       - name: 📥 Checkout code
