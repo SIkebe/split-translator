@@ -25,7 +25,8 @@ export class PopupMock {
       // Force screen reader announcement for important messages only
       if (type === 'error' || type === 'success') {
         statusDiv.setAttribute('aria-live', 'assertive');
-        setTimeout(() => statusDiv.setAttribute('aria-live', 'polite'), 100);
+        // In test environment, set immediately
+        statusDiv.setAttribute('aria-live', 'polite');
       }
     }
 
@@ -33,7 +34,8 @@ export class PopupMock {
     updateStatus('Select a language and click "Split + Translate"', 'info');
 
     // Initialize focus management
-    setTimeout(() => targetLanguageSelect.focus(), 100);
+    // In test environment, focus immediately
+    targetLanguageSelect.focus();
 
     // Load saved language settings
     chrome.storage.sync.get(['targetLanguage'], function(result: { targetLanguage?: string }) {
@@ -115,10 +117,8 @@ export class PopupMock {
         if (response.success) {
           updateStatus('Split + translation completed successfully!', 'success');
 
-          // Close popup after 1 second
-          setTimeout(() => {
-            window.close();
-          }, 1000);
+          // In test environment, close immediately
+          window.close();
         } else {
           throw new Error(response.error || 'Failed to split + translate');
         }

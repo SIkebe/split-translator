@@ -60,10 +60,8 @@ describe('Popup Script Unit Tests', () => {
     it('should load saved language preference', async () => {
       const savedLanguage = 'es';
       
-      // Simulate storage callback
-      setTimeout(() => {
-        targetLanguageSelect.value = savedLanguage;
-      }, 0);
+      // Simulate storage callback by immediately setting the value
+      targetLanguageSelect.value = savedLanguage;
 
       await TestUtils.waitForPromises();
       expect(chrome.storage.sync.get).toHaveBeenCalledWith(['targetLanguage'], expect.any(Function));
@@ -111,7 +109,7 @@ describe('Popup Script Unit Tests', () => {
       splitAndTranslateButton.dispatchEvent(clickEvent);
 
       // Allow async operations to complete
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await TestUtils.waitForPromises();
 
       // Button should be re-enabled after completion
       expect(splitAndTranslateButton.disabled).toBe(false);
@@ -127,7 +125,7 @@ describe('Popup Script Unit Tests', () => {
       splitAndTranslateButton.dispatchEvent(clickEvent);
 
       // Allow async operations to complete
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await TestUtils.waitForPromises();
 
       expect(chrome.runtime.sendMessage).toHaveBeenCalledWith({
         action: 'splitAndTranslate',
@@ -152,7 +150,7 @@ describe('Popup Script Unit Tests', () => {
       splitAndTranslateButton.dispatchEvent(clickEvent);
 
       // Allow async operations to complete
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await TestUtils.waitForPromises();
 
       const statusText = statusDiv.querySelector('.status-text');
       expect(statusText?.textContent).toContain('Test error message');
@@ -166,7 +164,7 @@ describe('Popup Script Unit Tests', () => {
       splitAndTranslateButton.dispatchEvent(clickEvent);
 
       // Allow async operations to complete
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await TestUtils.waitForPromises();
 
       const statusText = statusDiv.querySelector('.status-text');
       expect(statusText?.textContent).toContain('Could not get current tab');
@@ -180,7 +178,7 @@ describe('Popup Script Unit Tests', () => {
       splitAndTranslateButton.dispatchEvent(clickEvent);
 
       // Allow async operations to complete
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await TestUtils.waitForPromises();
 
       const statusText = statusDiv.querySelector('.status-text');
       expect(statusText?.textContent).toContain('Permission denied');

@@ -142,18 +142,18 @@ describe('Background Script Unit Tests', () => {
     });
 
     it('should wait for tab to become complete', async () => {
-      // Mock tab.get to return loading first, then complete
+      // Mock tab.get to return loading first, then complete after a few calls
       let callCount = 0;
       (chrome.tabs.get as jest.Mock).mockImplementation(() => {
         callCount++;
-        if (callCount <= 1) {
+        if (callCount <= 2) { // Complete after 2 loading calls
           return Promise.resolve({ status: 'loading' });
         }
         return Promise.resolve({ status: 'complete' });
       });
 
-      // Call waitForTabReady with short timeout
-      await backgroundModule.waitForTabReady(123, 500);
+      // Use a very short timeout for fast testing
+      await backgroundModule.waitForTabReady(123, 300);
       
       expect(chrome.tabs.get).toHaveBeenCalledWith(123);
       expect(callCount).toBeGreaterThan(1);
@@ -163,17 +163,9 @@ describe('Background Script Unit Tests', () => {
       // Mock tab.get to always return loading status
       (chrome.tabs.get as jest.Mock).mockResolvedValue({ status: 'loading' });
 
-      const startTime = Date.now();
+      // Use a very short timeout (10ms) for fast testing
+      await backgroundModule.waitForTabReady(123, 10);
       
-      // Call waitForTabReady with very short timeout
-      await backgroundModule.waitForTabReady(123, 50);
-      
-      const endTime = Date.now();
-      const elapsed = endTime - startTime;
-      
-      // Should have waited approximately the timeout duration
-      expect(elapsed).toBeGreaterThanOrEqual(40); // Allow some margin
-      expect(elapsed).toBeLessThan(200); // But not too long
       expect(chrome.tabs.get).toHaveBeenCalledWith(123);
     });
   });

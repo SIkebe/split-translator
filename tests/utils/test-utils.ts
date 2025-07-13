@@ -3,7 +3,7 @@
 import { ChromeApiMock, MockChromeTab, MockChromeWindow, MockDisplayInfo } from '../mocks/chrome-api.mock';
 
 export class TestUtils {
-  // Wait for promises to resolve
+  // Wait for promises to resolve (optimized for test environment)
   static async waitForPromises(): Promise<void> {
     await new Promise(resolve => setTimeout(resolve, 0));
   }
