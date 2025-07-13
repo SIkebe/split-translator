@@ -9,7 +9,6 @@ on:
 
 env:
   NODE_VERSION: '22'
-  CACHE_DEPENDENCY_PATH: 'package-lock.json'
 
 jobs:
   test:
@@ -29,8 +28,6 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: ${{ env.NODE_VERSION }}
-          cache: 'npm'
-          cache-dependency-path: ${{ env.CACHE_DEPENDENCY_PATH }}
 
       - name: 📦 Install dependencies
         run: npm ci --prefer-offline --no-audit
