@@ -16,7 +16,15 @@
     "watch": "tsc --watch --preserveWatchOutput",
     "package": "npm run build && build-package.bat",
     "clean": "rimraf dist",
-    "dev": "npm run clean && npm run build && echo 'Development build complete. Load dist/ folder in Chrome Extensions.'"
+    "dev": "npm run clean && npm run build && echo 'Development build complete. Load dist/ folder in Chrome Extensions.'",
+    "test": "jest --passWithNoTests",
+    "test:watch": "jest --watch --passWithNoTests",
+    "test:coverage": "jest --coverage --passWithNoTests",
+    "test:fast": "jest --no-coverage --passWithNoTests --maxWorkers=4 --silent",
+    "test:unit": "jest tests/unit --passWithNoTests --no-coverage",
+    "test:unit:fast": "jest tests/unit --passWithNoTests --no-coverage --silent --maxWorkers=4",
+    "test:integration": "jest tests/integration --passWithNoTests",
+    "test:silent": "jest --silent --passWithNoTests"
   },
   "keywords": [
     "browser-extension",
@@ -36,7 +44,12 @@
   "license": "MIT",
   "devDependencies": {
     "@types/chrome": "0.0.329",
+    "@types/jest": "29.5.12",
+    "@types/node": "20.14.9",
+    "jest": "29.7.0",
+    "jest-environment-jsdom": "29.7.0",
     "rimraf": "6.0.1",
+    "ts-jest": "29.1.5",
     "typescript": "5.8.3"
   },
   "files": [

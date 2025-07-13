@@ -265,3 +265,21 @@ function getDisplayBounds(displays: any[], currentWindow: chrome.windows.Window)
 chrome.runtime.onInstalled.addListener(() => {
   console.log('Split Translator extension has been installed');
 });
+
+// Export functions for testing (only in test environment)
+if (typeof module !== 'undefined' && module.exports) {
+  module.exports = {
+    handleError,
+    getDisplayBounds,
+    enforceMinimumDimensions,
+    waitForTabReady,
+    handleSplitView,
+    handleSplitAndTranslate,
+    getDisplayInfo,
+    OVERLAP_PIXELS,
+    MIN_WINDOW_WIDTH,
+    MIN_WINDOW_HEIGHT,
+    DEFAULT_WINDOW_WIDTH,
+    DEFAULT_WINDOW_HEIGHT,
+  };
+}
