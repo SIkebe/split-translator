@@ -6,12 +6,14 @@ This directory contains end-to-end tests for the Split Translator browser extens
 
 The E2E tests validate the complete user workflows of the extension, including:
 
-- ✅ Popup UI functionality and interactions
-- ✅ Language selection and persistence
-- ✅ Split + translate workflow
-- ✅ Error handling for unsupported URLs
-- ✅ Accessibility features
-- ✅ Keyboard navigation
+- ✅ **Popup UI functionality** and interactions
+- ✅ **Language selection** and persistence  
+- ✅ **Split + translate workflow** (functional tests)
+- ✅ **Error handling** for unsupported URLs
+- ✅ **Accessibility features** and ARIA compliance
+- ✅ **Keyboard navigation** support
+- ✅ **Core business logic** validation (URL construction, error patterns)
+- ✅ **UI state management** during operations
 
 ## Test Structure
 
@@ -19,13 +21,35 @@ The E2E tests validate the complete user workflows of the extension, including:
 tests/e2e/
 ├── utils/
 │   └── extension-utils.ts    # Utilities for browser extension testing
-├── popup.spec.ts            # Popup functionality tests
-├── split-translate.spec.ts   # Core workflow tests
+├── functional.spec.ts        # NEW: Core functionality tests
+├── popup.spec.ts            # Popup UI interaction tests
+├── split-translate.spec.ts   # Split+translate workflow tests 
 ├── error-handling.spec.ts    # Error scenario tests
+├── integration.spec.ts       # Extension integration tests
 ├── smoke.spec.ts            # Basic infrastructure tests
 ├── global-setup.ts          # Global test setup
 └── global-teardown.ts       # Global test cleanup
 ```
+
+## New Functional Tests
+
+The new `functional.spec.ts` file contains **9 comprehensive functional tests** that validate:
+
+### Core Functionality Validation
+- **UI workflow testing**: Complete popup interaction flow
+- **Language selection**: All supported languages with persistence 
+- **Button state management**: Proper aria-busy and disabled states
+- **Translation URL construction**: Validates Google Translate URL generation
+- **Unsupported URL detection**: Tests chrome://, edge://, file:// URL rejection
+- **Error handling patterns**: Graceful error recovery and UI reset
+- **Accessibility compliance**: ARIA attributes and keyboard navigation
+- **Multi-language content**: Special characters, emojis, mixed scripts
+
+### Test Coverage Summary
+- **Total E2E tests**: 18 scenarios
+- **Functional tests**: 9 scenarios (NEW)
+- **Integration tests**: 7 scenarios  
+- **Smoke tests**: 2 scenarios
 
 ## Running E2E Tests
 
@@ -36,18 +60,31 @@ tests/e2e/
    npm run build
    ```
 
-2. **Display server required** for extension testing:
+2. **Display server required** for full extension testing:
    - ⚠️ Chrome extensions **do not work in headless mode** - this is a Chrome limitation
    - Extension tests always run with `headless: false` even in CI environments
-   - Ensure you have a display server available (X11, Xvfb, etc.)
+   - Use Xvfb in CI: `xvfb-run -a npx playwright test`
 
 ### Available Commands
 
 ```bash
-# Run all E2E tests
+# Run combined unit + E2E tests (recommended for CI)
+npm run test:all
+
+# Run E2E smoke tests only (functional tests included)
+npm run test:e2e:smoke
+
+# Run full E2E suite (requires display server)
 npm run test:e2e
 
-# Run E2E tests with visible browser (headed mode)
+# Run with visible browser (headed mode)
+npm run test:e2e:headed
+
+# Run specific test file
+npx playwright test functional.spec.ts
+
+# Debug mode
+npm run test:e2e:debug
 npm run test:e2e:headed
 
 # Run specific test file

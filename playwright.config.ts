@@ -38,7 +38,7 @@ export default defineConfig({
     // Smoke tests that work in any environment (can use headless mode)
     {
       name: 'smoke-tests',
-      testMatch: ['**/smoke.spec.ts', '**/integration.spec.ts'],
+      testMatch: ['**/smoke.spec.ts', '**/integration.spec.ts', '**/functional.spec.ts'],
       use: { 
         ...devices['Desktop Chrome'],
         // Smoke tests can run in headless mode as they don't use extension APIs
