@@ -80,11 +80,11 @@ jobs:
       - name: 🏗️ Build project
         run: npm run build
 
-      - name: 🧪 Run E2E smoke tests
-        run: npm run test:e2e:smoke
+      - name: 🧪 Run all E2E tests
+        run: npm run test:e2e
 
       - name: 📊 E2E Test Summary
         run: |
           echo "## 🎭 E2E Test Results" >> $GITHUB_STEP_SUMMARY
           echo "✅ Build: Successful" >> $GITHUB_STEP_SUMMARY
-          echo "✅ E2E Smoke Tests: Passed" >> $GITHUB_STEP_SUMMARY
+          echo "✅ E2E Tests (All): Passed" >> $GITHUB_STEP_SUMMARY
