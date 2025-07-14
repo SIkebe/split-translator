@@ -38,7 +38,7 @@ export default defineConfig({
     // Smoke tests that work in any environment (can use headless mode)
     {
       name: 'smoke-tests',
-      testMatch: ['**/smoke.spec.ts', '**/integration.spec.ts', '**/functional.spec.ts', '**/popup.spec.ts', '**/error-handling.spec.ts', '**/split-translate.spec.ts'],
+      testMatch: ['**/smoke.spec.ts', '**/integration.spec.ts', '**/functional.spec.ts', '**/popup.spec.ts', '**/error-handling.spec.ts', '**/split-translate.spec.ts', '**/split-screen.spec.ts'],
       use: { 
         ...devices['Desktop Chrome'],
         // Smoke tests can run in headless mode as they don't use extension APIs
@@ -49,7 +49,7 @@ export default defineConfig({
     // Currently disabled as they require complex setup
     {
       name: 'chromium-extension',
-      testIgnore: ['**/smoke.spec.ts', '**/integration.spec.ts', '**/functional.spec.ts', '**/popup.spec.ts', '**/error-handling.spec.ts', '**/split-translate.spec.ts'],
+      testIgnore: ['**/smoke.spec.ts', '**/integration.spec.ts', '**/functional.spec.ts', '**/popup.spec.ts', '**/error-handling.spec.ts', '**/split-translate.spec.ts', '**/split-screen.spec.ts'],
       use: { 
         ...devices['Desktop Chrome'],
         // Browser extension testing configuration
