@@ -20,6 +20,12 @@ module.exports = {
     '<rootDir>/tests/**/*.spec.ts'
   ],
   
+  // Exclude Playwright E2E tests from Jest
+  testPathIgnorePatterns: [
+    '/node_modules/',
+    '<rootDir>/tests/e2e/'
+  ],
+  
   // Module path mapping
   moduleNameMapper: {
     '^@/(.*)$': '<rootDir>/src/$1'

@@ -35,17 +35,39 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
+    // Smoke tests that work in any environment
+    {
+      name: 'smoke-tests',
+      testMatch: ['**/smoke.spec.ts', '**/integration.spec.ts'],
+      use: { 
+        ...devices['Desktop Chrome'],
+      },
+    },
+    
+    // Full extension tests (require display server)
     {
       name: 'chromium-extension',
+      testIgnore: '**/smoke.spec.ts',
       use: { 
         ...devices['Desktop Chrome'],
         // Browser extension testing configuration
         launchOptions: {
+          // Use headless mode if no display available
+          headless: process.env.CI && !process.env.DISPLAY ? true : false,
           args: [
             `--disable-extensions-except=${path.resolve(__dirname, './dist')}`,
             `--load-extension=${path.resolve(__dirname, './dist')}`,
             '--no-sandbox',
             '--disable-dev-shm-usage',
+            '--disable-background-timer-throttling',
+            '--disable-backgrounding-occluded-windows',
+            '--disable-renderer-backgrounding',
+            // Additional flags for CI environments
+            ...(process.env.CI ? [
+              '--disable-gpu',
+              '--disable-web-security',
+              '--disable-features=VizDisplayCompositor',
+            ] : []),
           ],
         },
       },
