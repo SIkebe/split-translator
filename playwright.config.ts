@@ -35,16 +35,17 @@ export default defineConfig({
 
   /* Configure projects for major browsers */
   projects: [
-    // Smoke tests that work in any environment
+    // Smoke tests that work in any environment (can use headless mode)
     {
       name: 'smoke-tests',
       testMatch: ['**/smoke.spec.ts', '**/integration.spec.ts'],
       use: { 
         ...devices['Desktop Chrome'],
+        // Smoke tests can run in headless mode as they don't use extension APIs
       },
     },
     
-    // Full extension tests (require display server)
+    // Full extension tests (require non-headless mode + display server)
     {
       name: 'chromium-extension',
       testIgnore: '**/smoke.spec.ts',
@@ -52,8 +53,8 @@ export default defineConfig({
         ...devices['Desktop Chrome'],
         // Browser extension testing configuration
         launchOptions: {
-          // Use headless mode if no display available
-          headless: process.env.CI && !process.env.DISPLAY ? true : false,
+          // Chrome extensions require non-headless mode, even in CI
+          headless: false,
           args: [
             `--disable-extensions-except=${path.resolve(__dirname, './dist')}`,
             `--load-extension=${path.resolve(__dirname, './dist')}`,

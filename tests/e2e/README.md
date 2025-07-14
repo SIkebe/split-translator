@@ -37,7 +37,8 @@ tests/e2e/
    ```
 
 2. **Display server required** for extension testing:
-   - E2E tests require a headed browser (extension APIs don't work in headless mode)
+   - ⚠️ Chrome extensions **do not work in headless mode** - this is a Chrome limitation
+   - Extension tests always run with `headless: false` even in CI environments
    - Ensure you have a display server available (X11, Xvfb, etc.)
 
 ### Available Commands
@@ -69,8 +70,8 @@ npm run test:e2e -- tests/e2e/smoke.spec.ts
 - Requires display server for headed browser testing
 
 ### CI/CD Environment
-- Requires virtual display setup (Xvfb, etc.)
-- Or run with `--headless` flag (limited extension API support)
+- ⚠️ **Always requires virtual display setup** (Xvfb, etc.) - headless mode is not supported for extension APIs
+- Extensions must run with `headless: false` even in CI environments
 
 ### Example CI Setup (GitHub Actions)
 ```yaml
@@ -80,15 +81,16 @@ npm run test:e2e -- tests/e2e/smoke.spec.ts
 - name: Install Playwright browsers
   run: npx playwright install chromium
 
-- name: Setup virtual display
+- name: Setup virtual display (required for extension testing)
   run: |
     sudo apt-get update
     sudo apt-get install -y xvfb
     export DISPLAY=:99
     Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+    echo "DISPLAY=:99" >> $GITHUB_ENV
 
 - name: Run E2E tests
-  run: npm run test:e2e
+  run: npm run test:e2e:smoke  # Or test:e2e:extension
 ```
 
 ## Test Scenarios
