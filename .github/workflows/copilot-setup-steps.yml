@@ -25,9 +25,28 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: "22"
+          cache: 'npm'
+          cache-dependency-path: 'package-lock.json'
 
       - name: Install JavaScript dependencies
-        run: npm install
+        run: npm ci --prefer-offline --no-audit
+
+      - name: Install Playwright browsers
+        run: npx playwright install chromium
+
+      - name: Setup virtual display (Xvfb)
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y xvfb
+          export DISPLAY=:99
+          Xvfb :99 -screen 0 1024x768x24 > /dev/null 2>&1 &
+          echo "DISPLAY=:99" >> $GITHUB_ENV
 
       - name: Build TypeScript project
         run: npm run build
+
+      - name: Run unit tests
+        run: npm run test:unit
+
+      - name: Run all E2E tests
+        run: npm run test:e2e
